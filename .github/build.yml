@@ -4,6 +4,6 @@ steps:
     goVersion: '$(go.version)'
 
 - script: |
-    mkdir bin/
-    go build -o bin/
+    mkdir bin
+    go build -o bin/ ./...
   displayName: 'Build'
