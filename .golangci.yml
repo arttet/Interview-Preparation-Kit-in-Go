@@ -15,9 +15,9 @@ linters:
     - gofmt
     - goimports
     - golint
-    - gomnd
+    # - gomnd
     - goprintffuncname
-    - gosec
+    # - gosec
     - gosimple
     - govet
     - ineffassign
