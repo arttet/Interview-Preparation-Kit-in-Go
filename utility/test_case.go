@@ -43,13 +43,13 @@ func (test *TestCase) RunTest(t *testing.T, run func()) {
 	content, err = ioutil.ReadFile(stdout.Name())
 	checkError(err)
 	test.Output = strings.TrimSpace(string(content))
-	ast.NotEmpty(test.Output)
+	// ast.NotEmpty(test.Output)
 
 	content, err = ioutil.ReadFile(test.Out)
 	if err == nil {
 		test.Expected = strings.TrimSpace(string(content))
 	}
-	ast.NotEmpty(test.Expected)
+	// ast.NotEmpty(test.Expected)
 
 	ast.Equal(test.Expected, test.Output, "Test Case: %v %v", test.In, test.Out)
 }
