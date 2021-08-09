@@ -1,0 +1,4 @@
+davis 20
+davis 15
+edgehill 15
+davis 10
