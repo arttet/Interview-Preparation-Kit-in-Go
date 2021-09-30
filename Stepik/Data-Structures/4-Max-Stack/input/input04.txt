@@ -1,6 +1,0 @@
-5
-push 1
-push 2
-max
-pop
-max

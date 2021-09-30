@@ -1,9 +1,0 @@
-steps:
-- template: setup_go.yml
-  parameters:
-    goVersion: '$(go.version)'
-
-- script: |
-    mkdir bin
-    go build -o bin/ ./...
-  displayName: 'Build'

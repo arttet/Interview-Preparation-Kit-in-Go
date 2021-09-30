@@ -1,8 +1,10 @@
-module github.com/arttet/problem-solving-with-algorithms-and-data-structures
+module github.com/arttet/Interview-Preparation-Kit-in-Go
 
-go 1.15
+go 1.17
 
 require (
-	github.com/stretchr/testify v1.6.1
-	go.starlark.net v0.0.0-20210208172022-0a10e4fe7402 // indirect
+	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/stretchr/testify v1.7.0 // indirect
+	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )
