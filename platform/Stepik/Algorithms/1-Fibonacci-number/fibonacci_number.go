@@ -18,30 +18,30 @@ func FibonacciNumber(n int, m int) int {
 	return F[0][0]
 }
 
-func power(F *[2][2]int, n int, m int) {
+func power(fib *[2][2]int, n int, m int) {
 	if n == 0 || n == 1 {
 		return
 	}
 
-	power(F, n/2, m)
-	multiply(F, F, m)
+	power(fib, n/2, m)
+	multiply(fib, fib, m)
 
 	if n%2 != 0 {
 		M := [2][2]int{{1, 1}, {1, 0}}
-		multiply(F, &M, m)
+		multiply(fib, &M, m)
 	}
 }
 
-func multiply(F *[2][2]int, M *[2][2]int, m int) {
-	a := F[0][0]*M[0][0] + F[0][1]*M[1][0]
-	b := F[0][0]*M[0][1] + F[0][1]*M[1][1]
-	c := F[1][0]*M[0][0] + F[1][1]*M[1][0]
-	d := F[1][0]*M[0][1] + F[1][1]*M[1][1]
+func multiply(lhs *[2][2]int, rhs *[2][2]int, mod int) {
+	a := lhs[0][0]*rhs[0][0] + lhs[0][1]*rhs[1][0]
+	b := lhs[0][0]*rhs[0][1] + lhs[0][1]*rhs[1][1]
+	c := lhs[1][0]*rhs[0][0] + lhs[1][1]*rhs[1][0]
+	d := lhs[1][0]*rhs[0][1] + lhs[1][1]*rhs[1][1]
 
-	F[0][0] = a % m
-	F[0][1] = b % m
-	F[1][0] = c % m
-	F[1][1] = d % m
+	lhs[0][0] = a % mod
+	lhs[0][1] = b % mod
+	lhs[1][0] = c % mod
+	lhs[1][1] = d % mod
 }
 
 func main() {

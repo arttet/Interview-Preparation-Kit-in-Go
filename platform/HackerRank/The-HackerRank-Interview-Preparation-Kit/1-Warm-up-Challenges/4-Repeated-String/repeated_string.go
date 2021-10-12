@@ -7,8 +7,8 @@ import (
 )
 
 func repeatedString(s string, n int64) int64 {
-	var q int64 = n / int64(len(s))
-	var r int64 = n % int64(len(s))
+	q := n / int64(len(s))
+	r := n % int64(len(s))
 
 	var result int64
 	for i, ch := range s {

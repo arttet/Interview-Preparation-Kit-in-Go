@@ -16,7 +16,7 @@ func minimumTime(machines []int64, goal int64) int64 {
 
 	for lowerBound < upperBound {
 		numDays := (lowerBound + upperBound) >> 1
-		if total := getNumItems(machines, goal, numDays); total >= goal {
+		if total := getNumItems(machines, numDays); total >= goal {
 			upperBound = numDays
 		} else {
 			lowerBound = numDays + 1
@@ -26,7 +26,7 @@ func minimumTime(machines []int64, goal int64) int64 {
 	return lowerBound
 }
 
-func getNumItems(machines []int64, goal int64, numDays int64) int64 {
+func getNumItems(machines []int64, numDays int64) int64 {
 	var result int64
 	for _, machine := range machines {
 		result += numDays / machine

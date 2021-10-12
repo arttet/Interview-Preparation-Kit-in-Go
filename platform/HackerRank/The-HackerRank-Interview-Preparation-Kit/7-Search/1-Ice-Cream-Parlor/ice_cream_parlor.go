@@ -6,10 +6,8 @@ import (
 	"os"
 )
 
-func whatFlavors(costs []int, money int) (int, int) {
+func whatFlavors(costs []int, money int) (lhs int, rhs int) {
 	mapping := make(map[int]int)
-
-	var lhs, rhs int
 
 	for i, v := range costs {
 		cost, ok := mapping[money-v]

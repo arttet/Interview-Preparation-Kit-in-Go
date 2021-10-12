@@ -13,8 +13,8 @@ type knapsack struct {
 }
 
 func continuousKnapsackProblem(arr []knapsack, weight int) float64 {
-	sort.SliceStable(arr, func(i, j int) bool {
-		return arr[i].cost*arr[j].weight > arr[j].cost*arr[i].weight
+	sort.Slice(arr, func(i, j int) bool {
+		return arr[i].cost*arr[j].weight > arr[j].cost*arr[i].weight // nolint: gocritic
 	})
 
 	var sum float64

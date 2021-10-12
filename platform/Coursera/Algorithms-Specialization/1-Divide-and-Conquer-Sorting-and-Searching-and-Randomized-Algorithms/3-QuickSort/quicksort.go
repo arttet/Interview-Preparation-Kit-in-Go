@@ -90,10 +90,11 @@ func main() {
 	reader := bufio.NewScanner(stdin)
 	writer := bufio.NewWriterSize(stdout, 1024*1024)
 
-	var arr []int
-	for value := 0; reader.Scan(); arr = append(arr, value) {
-		value, err = strconv.Atoi(reader.Text())
+	arr := make([]int, 0, 64)
+	for reader.Scan() {
+		value, err := strconv.Atoi(reader.Text())
 		checkError(err)
+		arr = append(arr, value)
 	}
 
 	pivots := []pivotID{firstPivot, lastPivot, medianOfThreePivot}

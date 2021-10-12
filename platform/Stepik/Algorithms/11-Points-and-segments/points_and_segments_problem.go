@@ -24,17 +24,18 @@ func pointsAndSegmentsProblem(segments [][]int, points []int) []int {
 	arr := make([]point, 0, n+2*m)
 
 	for i := 0; i < n; i++ {
-		arr = append(arr, point{
-			value:  segments[i][0],
-			index:  i,
-			border: left,
-		})
-
-		arr = append(arr, point{
-			value:  segments[i][1],
-			index:  i,
-			border: right,
-		})
+		arr = append(arr,
+			point{
+				value:  segments[i][0],
+				index:  i,
+				border: left,
+			},
+			point{
+				value:  segments[i][1],
+				index:  i,
+				border: right,
+			},
+		)
 	}
 
 	for i := 0; i < m; i++ {
@@ -53,11 +54,12 @@ func pointsAndSegmentsProblem(segments [][]int, points []int) []int {
 	result := make([]int, m)
 
 	for i := range arr {
-		if arr[i].border == left {
+		switch arr[i].border {
+		case left:
 			counter++
-		} else if arr[i].border == right {
+		case right:
 			counter--
-		} else {
+		default:
 			result[arr[i].index] = counter
 		}
 	}

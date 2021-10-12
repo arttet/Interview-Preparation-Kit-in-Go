@@ -12,7 +12,7 @@ const minInt int = (1 << bits.UintSize) / -2
 func maxSubsetSum(arr []int) int {
 	n := len(arr)
 
-	var previous, last int = arr[0], max(arr[0], arr[1])
+	previous, last := arr[0], max(arr[0], arr[1])
 	for i := 2; i < n; i++ {
 		current := max(previous+arr[i], last, previous, arr[i])
 		previous = last
