@@ -25,7 +25,7 @@ func minOperations(n int) []int {
 	result := make([]int, 0, n)
 	for i := n; i >= 1; {
 		result = append(result, i)
-		if dp[i-1] == dp[i]-1 {
+		if dp[i-1] == dp[i]-1 { // nolint: gocritic
 			i--
 		} else if i%2 == 0 && dp[i/2] == dp[i]-1 {
 			i /= 2

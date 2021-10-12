@@ -6,10 +6,9 @@ import (
 	"os"
 )
 
-func activityNotifications(expenditures []int, d int) int {
-	var notifications int
+const maxExpenditure = 201
 
-	const maxExpenditure = 201
+func activityNotifications(expenditures []int, d int) (notifications int) { // nolint: gocognit
 	histogram := make([]int, maxExpenditure)
 
 	var i, j int
@@ -25,7 +24,7 @@ func activityNotifications(expenditures []int, d int) int {
 
 		for j = 0; j < maxExpenditure; j++ {
 			cursor += histogram[j]
-			if d%2 == 1 {
+			if d%2 == 1 { // nolint: nestif
 				// Odd -> Pick middle one for median
 				if cursor >= d/2+1 {
 					doubleMedian = 2 * j
@@ -58,7 +57,6 @@ func activityNotifications(expenditures []int, d int) int {
 		histogram[expenditures[i-d]]--
 		histogram[expenditures[i]]++
 	}
-
 	return notifications
 }
 

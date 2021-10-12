@@ -53,7 +53,7 @@ func main() {
 	heap.Init(h)
 
 	for ; n > 0; n-- {
-		_, err = fmt.Fscan(reader, &command)
+		fmt.Fscan(reader, &command)
 		if command == "Insert" {
 			_, err = fmt.Fscan(reader, &value)
 			checkError(err)

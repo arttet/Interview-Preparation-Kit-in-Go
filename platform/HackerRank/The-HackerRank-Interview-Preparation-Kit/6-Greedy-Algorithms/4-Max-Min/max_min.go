@@ -12,7 +12,7 @@ func maxMin(k int, arr []int) int {
 		return arr[i] < arr[j]
 	})
 
-	var result int = arr[len(arr)-1]
+	result := arr[len(arr)-1]
 	for i := 0; i < len(arr)-k+1; i++ {
 		if value := arr[i+k-1] - arr[i]; value < result {
 			result = value

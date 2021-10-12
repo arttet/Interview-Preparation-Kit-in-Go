@@ -69,12 +69,12 @@ func main() {
 	checkError(err)
 
 	var n int
-	for i := 0; d > 0; d-- {
+	for ; d > 0; d-- {
 		_, err = fmt.Fscan(reader, &n)
 		checkError(err)
 
 		arr := make([]int, n)
-		for i = 0; i < n; i++ {
+		for i := 0; i < n; i++ {
 			_, err = fmt.Fscan(reader, &arr[i])
 			checkError(err)
 		}

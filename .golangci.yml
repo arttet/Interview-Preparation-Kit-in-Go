@@ -102,6 +102,9 @@ linters-settings:
   whitespace:
     multi-if: true
     multi-func: true
+  gosec:
+    excludes:
+      - G404
 
 linters:
   fast: false
@@ -134,10 +137,10 @@ linters:
     - exhaustive # check exhaustiveness of enum switch statements
     - nlreturn # nlreturn checks for a new line before return and branch statements to increase code clarity
     - paralleltest # paralleltest detects missing usage of t.Parallel() method in your Go test
+    - testpackage # Linter that makes you use a separate _test package
   enable:
     - sqlclosecheck # Checks that sql.Rows and sql.Stmt are closed.
     - promlinter # Check Prometheus metrics naming via promlint
-    - testpackage # Linter that makes you use a separate _test package
     - asciicheck # Simple linter to check that your code does not contain non-ASCII identifiers
     - bodyclose # checks whether HTTP response body is closed successfully
     - deadcode # Finds unused code

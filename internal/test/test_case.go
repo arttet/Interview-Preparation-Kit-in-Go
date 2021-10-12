@@ -19,6 +19,7 @@ type TestCase struct {
 }
 
 func (test *TestCase) RunTest(t *testing.T, run func()) {
+	t.Helper()
 	ast := assert.New(t)
 
 	stdin, err := os.Open(test.In)

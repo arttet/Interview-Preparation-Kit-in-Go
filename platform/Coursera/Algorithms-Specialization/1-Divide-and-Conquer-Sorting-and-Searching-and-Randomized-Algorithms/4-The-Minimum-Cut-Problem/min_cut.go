@@ -136,11 +136,10 @@ func (g *graph) karger() int {
 	return minCut
 }
 
-func (g *graph) randomNodes() (vertice, vertice) {
+func (g *graph) randomNodes() (v1 vertice, v2 vertice) {
 	rand.Seed(time.Now().Unix() * int64(runtime.NumGoroutine()))
 
 	var i int
-	var v1, v2 vertice
 
 	v1Index := rand.Intn(g.Len())
 	for node := range g.nodes {

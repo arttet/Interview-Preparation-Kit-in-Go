@@ -7,7 +7,7 @@ import (
 )
 
 func hourglassSum(arr [][]int) int {
-	var maximumSum int = -2147483648
+	maximumSum := -2147483648
 
 	m, n := len(arr), len(arr[0])
 	for i := 0; i < m-2; i++ {
