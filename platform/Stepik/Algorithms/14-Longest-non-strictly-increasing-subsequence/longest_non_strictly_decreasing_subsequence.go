@@ -15,10 +15,6 @@ const (
 
 func longestNonStrictlyDecreasingSubsequence(arr []int) []int {
 	n := len(arr)
-	if n == 0 {
-		return nil
-	}
-
 	dp := make([]int, n+1)
 	position := make([]int, n+1)
 	previous := make([]int, n)

@@ -10,7 +10,7 @@ import (
 )
 
 func TestOK(t *testing.T) {
-	tests := []int{0, 1, 2, 8, 10, 26}
+	tests := []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 26}
 	for _, i := range tests {
 		test := utility.TestCase{
 			In:  fmt.Sprintf("input/input%02d.txt", i),

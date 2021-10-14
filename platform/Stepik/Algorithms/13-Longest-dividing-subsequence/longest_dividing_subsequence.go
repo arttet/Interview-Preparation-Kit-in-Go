@@ -8,10 +8,6 @@ import (
 
 func lengthOfLDS(arr []int) int {
 	n := len(arr)
-	if n == 0 {
-		return 0
-	}
-
 	dp := make([]int, n)
 	dp[0] = 1
 

@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"io"
 	"os"
 	"strconv"
 	"strings"
@@ -80,9 +79,6 @@ func main() {
 
 func readLine(reader *bufio.Reader) string {
 	str, _, err := reader.ReadLine()
-	if err == io.EOF {
-		return ""
-	}
 	checkError(err)
 	return strings.TrimRight(string(str), "\r\n")
 }
