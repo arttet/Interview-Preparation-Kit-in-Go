@@ -7,18 +7,14 @@ import (
 )
 
 // FibonacciNumber returns the nth value in the fibonacci series.
-func FibonacciNumber(n int, m int) int {
-	if n == 0 {
-		return 0
-	}
-
-	F := [2][2]int{{1, 1}, {1, 0}}
+func FibonacciNumber(n uint, m uint) uint {
+	F := [2][2]uint{{1, 1}, {1, 0}}
 	power(&F, n-1, m)
 
 	return F[0][0]
 }
 
-func power(fib *[2][2]int, n int, m int) {
+func power(fib *[2][2]uint, n uint, m uint) {
 	if n == 0 || n == 1 {
 		return
 	}
@@ -27,12 +23,12 @@ func power(fib *[2][2]int, n int, m int) {
 	multiply(fib, fib, m)
 
 	if n%2 != 0 {
-		M := [2][2]int{{1, 1}, {1, 0}}
+		M := [2][2]uint{{1, 1}, {1, 0}}
 		multiply(fib, &M, m)
 	}
 }
 
-func multiply(lhs *[2][2]int, rhs *[2][2]int, mod int) {
+func multiply(lhs *[2][2]uint, rhs *[2][2]uint, mod uint) {
 	a := lhs[0][0]*rhs[0][0] + lhs[0][1]*rhs[1][0]
 	b := lhs[0][0]*rhs[0][1] + lhs[0][1]*rhs[1][1]
 	c := lhs[1][0]*rhs[0][0] + lhs[1][1]*rhs[1][0]
@@ -60,7 +56,7 @@ func main() {
 	reader := bufio.NewReaderSize(stdin, 1024*1024)
 	writer := bufio.NewWriterSize(stdout, 1024*1024)
 
-	var n, m int
+	var n, m uint
 
 	_, err = fmt.Fscan(reader, &n, &m)
 	checkError(err)

@@ -14,10 +14,6 @@ type pair struct {
 
 func maximumSum(arr []int64, m int64) int64 {
 	n := len(arr)
-	if n == 0 {
-		return 0
-	}
-
 	prefix := make([]pair, n)
 
 	var current, maxSum int64

@@ -3,8 +3,6 @@ ifneq ("1.17","$(shell printf "$(GO_VERSION_SHORT)\n1.17" | sort -V | head -1)")
 $(error NEED GO VERSION >= 1.17. Found: $(GO_VERSION_SHORT))
 endif
 
-###############################################################################
-
 .PHONY: build
 build:
 	go build -o bin/ ./...
@@ -12,11 +10,20 @@ build:
 .PHONY: test
 test:
 	go test -v -coverprofile cover.out ./...
+	go tool cover -func cover.out | grep -v -E '100.0%|total' || echo "OK"
 	go tool cover -func cover.out | grep total | awk '{print ($$3)}'
 
 .PHONY: bench
 bench:
-	go test -cpuprofile cpu.prof -memprofile mem.prof -bench ./...
+	go test -run Bench -bench=. ./... |  tee bench_output.out
+	awk '/Benchmark/{count ++; printf("%d,%s,%s,%s\n",count,$$1,$$2,$$3)}' bench_output.out > result.out
+
+.PHONY: pprof
+pprof:
+	cd platform/Coursera/Algorithms-Specialization/1-Divide-and-Conquer-Sorting-and-Searching-and-Randomized-Algorithms/1-Karatsuba-Multiplication/ && \
+		go test -run=Bench -bench=. -cpuprofile cpu.out -memprofile mem.out -v && \
+		go tool pprof -web cpu.out && \
+		go tool pprof -web mem.out
 
 .PHONY: lint
 lint:
@@ -35,5 +42,3 @@ style:
 .PHONY: cover
 cover:
 	go tool cover -html cover.out
-
-###############################################################################

@@ -17,7 +17,7 @@ func minimumPasses(machines int64, workers int64, price int64, target int64) int
 	var right int64 = math.MaxInt64
 
 	for left < right {
-		passes := (left + right) >> 1
+		passes := left + (right-left)>>1
 		if check(machines, workers, price, target, passes) {
 			right = passes
 		} else {
@@ -29,9 +29,9 @@ func minimumPasses(machines int64, workers int64, price int64, target int64) int
 }
 
 func check(machines int64, workers int64, price int64, target int64, passes int64) bool {
-	if machines >= (target+workers-1)/workers {
-		return true
-	}
+	// if machines >= (target+workers-1)/workers {
+	// 	return true
+	// }
 
 	candies := machines * workers
 	passes--
