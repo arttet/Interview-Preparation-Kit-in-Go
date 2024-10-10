@@ -66,17 +66,17 @@ func main() {
 	writer := bufio.NewWriterSize(stdout, 1024*1024)
 
 	var q int
-	fmt.Fscan(reader, &q)
+	_, _ = fmt.Fscan(reader, &q)
 
 	for i := 0; i < q; i++ {
 		var n int
 		var m int64
 
-		fmt.Fscan(reader, &n, &m)
+		_, _ = fmt.Fscan(reader, &n, &m)
 
 		arr := make([]int64, n)
 		for j := 0; j < n; j++ {
-			fmt.Fscan(reader, &arr[j])
+			_, _ = fmt.Fscan(reader, &arr[j])
 		}
 
 		answer := maximumSum(arr, m)

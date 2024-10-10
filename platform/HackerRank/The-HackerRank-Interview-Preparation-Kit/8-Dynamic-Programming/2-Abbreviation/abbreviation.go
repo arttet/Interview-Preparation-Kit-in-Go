@@ -64,7 +64,7 @@ func main() {
 	writer := bufio.NewWriterSize(stdout, 1024*1024)
 
 	var q int
-	fmt.Fscanln(reader, &q)
+	_, _ = fmt.Fscanln(reader, &q)
 
 	var a, b string
 	for i := 0; i < q; i++ {

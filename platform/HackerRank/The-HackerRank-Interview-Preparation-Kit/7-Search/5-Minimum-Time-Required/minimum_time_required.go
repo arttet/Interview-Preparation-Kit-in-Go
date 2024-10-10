@@ -54,7 +54,7 @@ func main() {
 	var n int
 	var goal int64
 
-	fmt.Fscan(reader, &n, &goal)
+	_, _ = fmt.Fscan(reader, &n, &goal)
 
 	machines := make([]int64, n)
 	for i := 0; i < n; i++ {

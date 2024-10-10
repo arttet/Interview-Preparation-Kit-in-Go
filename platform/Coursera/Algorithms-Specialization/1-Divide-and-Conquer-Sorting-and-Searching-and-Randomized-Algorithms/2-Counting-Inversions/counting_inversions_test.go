@@ -6,8 +6,9 @@ import (
 	"sort"
 	"testing"
 
-	utility "github.com/arttet/Interview-Preparation-Kit-in-Go/internal/test"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/arttet/Interview-Preparation-Kit-in-Go/internal/utility"
 )
 
 func TestOK(t *testing.T) {

@@ -1,0 +1,115 @@
+name: GitHub CI
+
+on:
+  push:
+  pull_request:
+  schedule:
+    # https://crontab.guru/
+    # At 12:00 AM, only on Monday
+    - cron: 0 0 * * 1
+  workflow_dispatch:
+
+jobs:
+  fmt:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go-version }}
+
+      - name: Install requirements
+        run: |
+          go install golang.org/x/tools/cmd/goimports@latest
+
+      - name: Check format
+        run: |
+          goimports -l $(pwd)
+
+  lint:
+    runs-on: ${{ matrix.os }}
+    needs: [fmt]
+
+    strategy:
+      matrix:
+        go-version: [stable]
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go-version }}
+
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v6
+        with:
+          version: v1.61
+
+  build:
+    runs-on: ${{ matrix.os }}
+    needs: [fmt]
+
+    strategy:
+      matrix:
+        go-version: [stable]
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ matrix.go-version }}
+
+      - name: Build
+        run: |
+          go env -w CGO_ENABLED=0
+          go build -o bin/ ./...
+
+      - name: Test
+        run: |
+          go env -w CGO_ENABLED=1
+          go test -v -timeout 30s -race ./...
+
+  # coverage:
+  #   runs-on: ubuntu-latest
+  #   needs: [fmt, lint, build]
+
+  #   steps:
+  #     - name: Checkout repository
+  #       uses: actions/checkout@v4
+
+  #     - name: Setup Go
+  #       uses: actions/setup-go@v5
+  #       with:
+  #         go-version: stable
+
+  #     - name: Generate code coverage
+  #       run: |
+  #         go env -w CGO_ENABLED=0
+  #         go test -v -coverprofile coverage.out ./...
+  #         go tool cover -html coverage.out -o coverage.html
+
+  #     - name: Upload coverage to Codecov
+  #       uses: codecov/codecov-action@v4
+  #       with:
+  #         token: ${{ secrets.CODECOV_TOKEN }}
+  #         files: ./coverage.out
+  #         flags: unittests
+  #         name: codecov-umbrella
+
+  #     - name: Archive code coverage results
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: code-coverage-report
+  #         path: coverage.html

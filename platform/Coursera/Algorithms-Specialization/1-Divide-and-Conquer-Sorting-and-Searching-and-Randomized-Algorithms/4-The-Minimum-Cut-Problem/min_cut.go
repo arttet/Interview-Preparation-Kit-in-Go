@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"math/rand"
 	"os"
-	"runtime"
 	"strconv"
 	"strings"
 	"sync"
@@ -137,11 +136,11 @@ func (g *graph) karger() int {
 }
 
 func (g *graph) randomNodes() (v1 vertice, v2 vertice) {
-	rand.Seed(time.Now().Unix() * int64(runtime.NumGoroutine()))
+	rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
 
 	var i int
 
-	v1Index := rand.Intn(g.Len())
+	v1Index := rnd.Intn(g.Len())
 	for node := range g.nodes {
 		if i == v1Index {
 			v1 = node

@@ -28,10 +28,11 @@ func multiplication(s1, s2 string) string {
 // Output: the product x * y.
 // Assumption: n is a power of 2.
 //
+// |   b * d   |   a * c   |   p * q   | lower-recursion space |   p   |   q   |
+// | n digits  |  n digits |  n digits |         2n digits     |  n/2  |   n/2 |
+//
 // The result must have space for 6n digits.
 // The result will be in only the first 2n digits.
-// |   b * d   |   a * c   |   p * q   | lower-recursion space |   p   |   q   |
-//    n digits    n digits    n digits          2n digits         n/2     n/2
 func karatsuba(x Integer, y Integer, result Integer, n int) {
 	const cutOff = 4
 
@@ -169,13 +170,6 @@ func checkError(err error) {
 	if err != nil {
 		panic(err)
 	}
-}
-
-func max(x, y int) int {
-	if x > y {
-		return x
-	}
-	return y
 }
 
 func getPowerOfTwo(n int) int {

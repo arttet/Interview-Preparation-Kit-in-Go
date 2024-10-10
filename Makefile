@@ -3,15 +3,17 @@ ifneq ("1.17","$(shell printf "$(GO_VERSION_SHORT)\n1.17" | sort -V | head -1)")
 $(error NEED GO VERSION >= 1.17. Found: $(GO_VERSION_SHORT))
 endif
 
+.PHONY: fmt
+fmt:
+	goimports -w -local github.com/arttet/Interview-Preparation-Kit-in-Go ${CURDIR}
+
 .PHONY: build
 build:
 	go build -o bin/ ./...
 
 .PHONY: test
 test:
-	go test -v -coverprofile cover.out ./...
-	go tool cover -func cover.out | grep -v -E '100.0%|total' || echo "OK"
-	go tool cover -func cover.out | grep total | awk '{print ($$3)}'
+	go test -v -timeout 30s -count 1 ./...
 
 .PHONY: bench
 bench:
@@ -34,10 +36,6 @@ lint:
 .PHONY: tidy
 tidy:
 	go mod tidy
-
-.PHONY: style
-style:
-	find . -iname *.go | xargs gofmt -w
 
 .PHONY: cover
 cover:

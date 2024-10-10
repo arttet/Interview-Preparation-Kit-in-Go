@@ -1,9 +1,9 @@
 package utility
 
 import (
-	"io/ioutil"
 	"os"
 	"strings"
+
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -26,7 +26,7 @@ func (test *TestCase) RunTest(t *testing.T, run func()) {
 	checkError(err)
 	defer stdin.Close()
 
-	stdout, err := ioutil.TempFile("", "output.*.txt")
+	stdout, err := os.CreateTemp("", "output.*.txt")
 	checkError(err)
 	defer os.Remove(stdout.Name())
 
@@ -34,17 +34,17 @@ func (test *TestCase) RunTest(t *testing.T, run func()) {
 
 	run()
 
-	content, err := ioutil.ReadFile(test.In)
+	content, err := os.ReadFile(test.In)
 	checkError(err)
 	test.Input = strings.TrimSpace(string(content))
 	ast.NotEmpty(test.Input)
 
-	content, err = ioutil.ReadFile(stdout.Name())
+	content, err = os.ReadFile(stdout.Name())
 	checkError(err)
 	test.Output = strings.TrimSpace(string(content))
 	// ast.NotEmpty(test.Output)
 
-	content, err = ioutil.ReadFile(test.Out)
+	content, err = os.ReadFile(test.Out)
 	if err == nil {
 		test.Expected = strings.TrimSpace(string(content))
 	}
