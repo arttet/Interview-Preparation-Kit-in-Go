@@ -48,11 +48,11 @@ func main() {
 	writer := bufio.NewWriterSize(stdout, 1024*1024)
 
 	var n int
-	fmt.Fscanln(reader, &n)
+	_, _ = fmt.Fscanln(reader, &n)
 
 	arr := make([]int, n)
 	for i := 0; i < n; i++ {
-		fmt.Fscanln(reader, &arr[i])
+		_, _ = fmt.Fscanln(reader, &arr[i])
 	}
 
 	result := candies(n, arr)

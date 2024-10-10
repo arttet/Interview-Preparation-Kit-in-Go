@@ -79,7 +79,7 @@ func main() {
 	writer := bufio.NewWriterSize(stdout, 1024*1024)
 
 	var m, w, p, n int64
-	fmt.Fscan(reader, &m, &w, &p, &n)
+	_, _ = fmt.Fscan(reader, &m, &w, &p, &n)
 
 	answer := minimumPasses(m, w, p, n)
 	fmt.Fprint(writer, answer)
