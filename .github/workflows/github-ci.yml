@@ -83,7 +83,7 @@ jobs:
 
   coverage:
     runs-on: ubuntu-latest
-    needs: [fmt, lint, build]
+    needs: [lint, build]
 
     steps:
       - name: Checkout repository
@@ -94,13 +94,25 @@ jobs:
         with:
           go-version: stable
 
+      - name: Install requirements
+        run: |
+          go install github.com/jstemmer/go-junit-report@latest
+
       - name: Generate code coverage
         run: |
           go env -w CGO_ENABLED=0
-          go test -v -coverprofile coverage.out ./...
+          go test ./... -v -coverprofile coverage.out
+          go test ./... -v | go-junit-report > report.xml
           go tool cover -html coverage.out -o coverage.html
 
-      - name: Upload coverage to Codecov
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./report.xml
+
+      - name: Upload code coverage results to Codecov
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
