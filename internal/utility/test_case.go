@@ -1,8 +1,11 @@
 package utility
 
 import (
+	"fmt"
 	"os"
+	"path/filepath"
 	"strings"
+	"time"
 
 	"testing"
 
@@ -18,19 +21,24 @@ type TestCase struct {
 	Expected string
 }
 
+const INPUT_PATH_ENV = "INPUT_PATH"
+const OUTPUT_PATH_ENV = "OUTPUT_PATH"
+
 func (test *TestCase) RunTest(t *testing.T, run func()) {
 	t.Helper()
 	ast := assert.New(t)
 
-	stdin, err := os.Open(test.In)
+	err := os.Setenv(INPUT_PATH_ENV, test.In)
 	checkError(err)
-	defer stdin.Close()
 
-	stdout, err := os.CreateTemp("", "output.*.txt")
+	dir, err := os.MkdirTemp("", "test_*_dir")
 	checkError(err)
-	defer os.Remove(stdout.Name())
+	defer os.RemoveAll(dir)
 
-	os.Stdin, os.Stdout = stdin, stdout
+	fileName := fmt.Sprintf("output.%d.txt", time.Now().UnixNano())
+	tempFileName := filepath.Join(dir, fileName)
+	err = os.Setenv(OUTPUT_PATH_ENV, tempFileName)
+	checkError(err)
 
 	run()
 
@@ -39,16 +47,20 @@ func (test *TestCase) RunTest(t *testing.T, run func()) {
 	test.Input = strings.TrimSpace(string(content))
 	ast.NotEmpty(test.Input)
 
-	content, err = os.ReadFile(stdout.Name())
+	content, err = os.ReadFile(tempFileName)
 	checkError(err)
 	test.Output = strings.TrimSpace(string(content))
-	// ast.NotEmpty(test.Output)
 
 	content, err = os.ReadFile(test.Out)
 	if err == nil {
 		test.Expected = strings.TrimSpace(string(content))
 	}
-	// ast.NotEmpty(test.Expected)
+
+	err = os.Unsetenv(INPUT_PATH_ENV)
+	checkError(err)
+
+	err = os.Unsetenv(OUTPUT_PATH_ENV)
+	checkError(err)
 
 	ast.Equal(test.Expected, test.Output, "Test Case: %v %v", test.In, test.Out)
 }

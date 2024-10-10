@@ -30,13 +30,6 @@ func commonChild(s1 string, s2 string) int {
 	return longestCommonSubsequence[m][n]
 }
 
-func max(lhs int, rhs int) int {
-	if lhs > rhs {
-		return lhs
-	}
-	return rhs
-}
-
 func main() {
 	stdin, err := os.Open(os.Getenv("INPUT_PATH"))
 	if err != nil {

@@ -38,14 +38,6 @@ func knapsack(weights []uint, weight uint) uint {
 	return dp[0][weight]
 }
 
-func max(lhs, rhs uint) uint {
-	if lhs > rhs {
-		return lhs
-	}
-
-	return rhs
-}
-
 func main() {
 	stdin, err := os.Open(os.Getenv("INPUT_PATH"))
 	if err != nil {

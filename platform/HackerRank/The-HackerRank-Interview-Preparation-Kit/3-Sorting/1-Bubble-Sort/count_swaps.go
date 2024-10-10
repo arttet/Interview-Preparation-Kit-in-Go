@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-func countSwaps(arr []int) {
+func countSwaps(arr []int) ([]int, int) {
 	var i, j int
 	n := len(arr)
 
@@ -20,9 +20,7 @@ func countSwaps(arr []int) {
 		}
 	}
 
-	fmt.Printf("Array is sorted in %d swaps.\n", numSwaps)
-	fmt.Println("First Element:", arr[0])
-	fmt.Println("Last Element:", arr[n-1])
+	return arr, numSwaps
 }
 
 func main() {
@@ -32,7 +30,14 @@ func main() {
 	}
 	defer stdin.Close()
 
+	stdout, err := os.Create(os.Getenv("OUTPUT_PATH"))
+	if err != nil {
+		stdout = os.Stdout
+	}
+	defer stdout.Close()
+
 	reader := bufio.NewReaderSize(stdin, 1024*1024)
+	writer := bufio.NewWriterSize(stdout, 1024*1024)
 
 	var n int
 	_, err = fmt.Fscan(reader, &n)
@@ -44,7 +49,13 @@ func main() {
 		checkError(err)
 	}
 
-	countSwaps(arr)
+	arr, numSwaps := countSwaps(arr)
+
+	_, _ = fmt.Fprintf(writer, "Array is sorted in %d swaps.\n", numSwaps)
+	_, _ = fmt.Fprintf(writer, "First Element: %d\n", arr[0])
+	_, _ = fmt.Fprintf(writer, "Last Element: %d\n", arr[n-1])
+
+	writer.Flush()
 }
 
 func checkError(err error) {

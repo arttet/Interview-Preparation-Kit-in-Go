@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-func checkMagazine(magazine []string, note []string) {
+func checkMagazine(magazine []string, note []string) string {
 	dict := make(map[string]int)
 
 	var i int
@@ -18,12 +18,11 @@ func checkMagazine(magazine []string, note []string) {
 		if dict[note[i]] > 0 {
 			dict[note[i]]--
 		} else {
-			fmt.Print("No")
-			return
+			return "No"
 		}
 	}
 
-	fmt.Print("Yes")
+	return "Yes"
 }
 
 func main() {
@@ -33,7 +32,14 @@ func main() {
 	}
 	defer stdin.Close()
 
+	stdout, err := os.Create(os.Getenv("OUTPUT_PATH"))
+	if err != nil {
+		stdout = os.Stdout
+	}
+	defer stdout.Close()
+
 	reader := bufio.NewReaderSize(stdin, 1024*1024)
+	writer := bufio.NewWriterSize(stdout, 1024*1024)
 
 	var m, n, i int
 	_, err = fmt.Fscan(reader, &m, &n)
@@ -51,7 +57,10 @@ func main() {
 		checkError(err)
 	}
 
-	checkMagazine(magazine, note)
+	result := checkMagazine(magazine, note)
+
+	fmt.Fprintln(writer, result)
+	writer.Flush()
 }
 
 func checkError(err error) {
