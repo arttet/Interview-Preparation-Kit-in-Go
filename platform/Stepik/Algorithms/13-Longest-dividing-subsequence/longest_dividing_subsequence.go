@@ -26,14 +26,6 @@ func lengthOfLDS(arr []int) int {
 	return result
 }
 
-func max(lhs, rhs int) int {
-	if lhs > rhs {
-		return lhs
-	}
-
-	return rhs
-}
-
 func main() {
 	stdin, err := os.Open(os.Getenv("INPUT_PATH"))
 	if err != nil {

@@ -1,42 +1,59 @@
-GO_VERSION_SHORT:=$(shell echo `go version` | sed -E 's/.* go(.*) .*/\1/g')
-ifneq ("1.17","$(shell printf "$(GO_VERSION_SHORT)\n1.17" | sort -V | head -1)")
-$(error NEED GO VERSION >= 1.17. Found: $(GO_VERSION_SHORT))
-endif
+.DEFAULT_GOAL := help
+
+################################################################################
+
+BIN_DIR ?= bin/
+
+################################################################################
+
+# Note: use Makefile.local for customization
+-include Makefile.local
+
+## ▸▸▸ Development commands ◂◂◂
+
+.PHONY: help
+help:			## Display the help message
+	@fgrep -h "## " $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/## //'
 
 .PHONY: fmt
-fmt:
+fmt:			## Format the codebase
 	goimports -w -local github.com/arttet/Interview-Preparation-Kit-in-Go ${CURDIR}
 
+.PHONY: lint
+lint:			##  Run code linters to check for style and errors
+	golangci-lint run ./...
+
 .PHONY: build
-build:
-	go build -o bin/ ./...
+build:			## Compile the packages
+	go build -o ${BIN_DIR} ./...
 
 .PHONY: test
-test:
-	go test -v -timeout 30s -count 1 ./...
+test:			## Run unit tests
+	go test -coverprofile coverage.out ./...
+	go tool cover -func coverage.out | grep -E '100.0%|total' || echo "OK"
+	go tool cover -func coverage.out | grep total | awk '{print ($$3)}'
 
 .PHONY: bench
-bench:
-	go test -run Bench -bench=. ./... |  tee bench_output.out
+bench:			## Execute benchmarks
+	go test -run Bench -bench=. ./... | tee bench_output.out
 	awk '/Benchmark/{count ++; printf("%d,%s,%s,%s\n",count,$$1,$$2,$$3)}' bench_output.out > result.out
 
 .PHONY: pprof
-pprof:
+pprof:			## Run performance profiling with pprof
 	cd platform/Coursera/Algorithms-Specialization/1-Divide-and-Conquer-Sorting-and-Searching-and-Randomized-Algorithms/1-Karatsuba-Multiplication/ && \
 		go test -run=Bench -bench=. -cpuprofile cpu.out -memprofile mem.out -v && \
 		go tool pprof -web cpu.out && \
 		go tool pprof -web mem.out
 
-.PHONY: lint
-lint:
-	@command -v golangci-lint 2>&1 > /dev/null || (echo "Install golangci-lint" && \
-		curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b "$(shell go env GOPATH)/bin" v1.42.1)
-	golangci-lint run ./...
+.PHONY: coverage
+coverage:		## Generate an HTML report for code coverage
+	go tool cover -html coverage.out
 
-.PHONY: tidy
-tidy:
-	go mod tidy
+.PHONY: validate
+validate:		## Validate the CodeCov YAML
+	cat codecov.yml | curl --data-binary @- https://codecov.io/validate
 
-.PHONY: cover
-cover:
-	go tool cover -html cover.out
+.PHONY: clean
+clean:			## Remove generated build artifacts
+	rm -rf ${BIN_DIR}
+	rm *.out
