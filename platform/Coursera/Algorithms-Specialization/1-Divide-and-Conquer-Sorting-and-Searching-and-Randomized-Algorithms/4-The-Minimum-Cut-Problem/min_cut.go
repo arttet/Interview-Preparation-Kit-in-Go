@@ -2,13 +2,13 @@ package main
 
 import (
 	"bufio"
+	"crypto/rand"
 	"fmt"
-	"math/rand"
+	"math/big"
 	"os"
 	"strconv"
 	"strings"
 	"sync"
-	"time"
 )
 
 /**
@@ -57,6 +57,7 @@ func (g *graph) removeEdge(origin, destiny vertice) {
 		if vi == destiny {
 			edges[i], edges[n] = edges[n], edges[i]
 			g.nodes[origin] = edges[:n]
+
 			break
 		}
 	}
@@ -81,7 +82,7 @@ func minimumCut(g *graph, iterations int) int {
 	cutSize := make([]int, iterations)
 
 	var wg sync.WaitGroup
-	for i := 0; i < iterations; i++ {
+	for i := range iterations {
 		wg.Add(1)
 		go func(i int) {
 			defer wg.Done()
@@ -91,7 +92,7 @@ func minimumCut(g *graph, iterations int) int {
 	wg.Wait()
 
 	minCut := cutSize[0]
-	for i := 0; i < iterations; i++ {
+	for i := range iterations {
 		if cutSize[i] < minCut {
 			minCut = cutSize[i]
 		}
@@ -129,21 +130,26 @@ func (g *graph) karger() int {
 
 	for key := range g.nodes {
 		minCut = len(g.nodes[key])
+
 		break
 	}
 
 	return minCut
 }
 
-func (g *graph) randomNodes() (v1 vertice, v2 vertice) {
-	rnd := rand.New(rand.NewSource(time.Now().UnixNano()))
+func (g *graph) randomNodes() (vertice, vertice) {
+	var v1, v2 vertice
+
+	n := g.Len()
+	rnd, err := rand.Int(rand.Reader, big.NewInt(int64(n)))
+	checkError(err)
+	v1Index := int(rnd.Int64())
 
 	var i int
-
-	v1Index := rnd.Intn(g.Len())
 	for node := range g.nodes {
 		if i == v1Index {
 			v1 = node
+
 			break
 		}
 		i++
@@ -151,10 +157,16 @@ func (g *graph) randomNodes() (v1 vertice, v2 vertice) {
 
 	connectedV1 := g.getEdges(v1)
 
-	v2Index := rand.Intn(len(connectedV1))
+	m := len(connectedV1)
+	rnd, err = rand.Int(rand.Reader, big.NewInt(int64(m)))
+	checkError(err)
+
+	v2Index := int(rnd.Int64())
+
 	for i := range connectedV1 {
 		if i == v2Index {
 			v2 = connectedV1[i].node
+
 			break
 		}
 	}
@@ -179,7 +191,7 @@ func main() {
 	writer := bufio.NewWriterSize(stdout, 1024*1024)
 
 	var origin, destiny int
-	g := newGraph()
+	graph := newGraph()
 
 	for reader.Scan() {
 		edges := strings.Fields(reader.Text())
@@ -190,28 +202,22 @@ func main() {
 			destiny, err = strconv.Atoi(edges[i])
 			checkError(err)
 
-			g.addEdge(vertice(origin), vertice(destiny))
+			graph.addEdge(vertice(origin), vertice(destiny))
 		}
 	}
 
-	n := g.Len()
+	n := graph.Len()
 	it := min(n*(n-1)/2, 1024)
 
-	result := minimumCut(g, it)
+	result := minimumCut(graph, it)
 	fmt.Fprint(writer, result)
 
-	writer.Flush()
+	err = writer.Flush()
+	checkError(err)
 }
 
 func checkError(err error) {
 	if err != nil {
 		panic(err)
 	}
-}
-
-func min(x, y int) int {
-	if x < y {
-		return x
-	}
-	return y
 }

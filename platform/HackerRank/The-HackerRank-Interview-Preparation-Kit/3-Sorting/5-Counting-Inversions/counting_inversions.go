@@ -10,7 +10,7 @@ func countInversions(arr []int) int64 {
 	return mergesort(arr, make([]int, len(arr)), 0, len(arr))
 }
 
-func mergesort(arr []int, temp []int, left int, right int) int64 {
+func mergesort(arr, temp []int, left, right int) int64 {
 	if left >= right-1 {
 		return 0
 	}
@@ -25,7 +25,7 @@ func mergesort(arr []int, temp []int, left int, right int) int64 {
 	return count
 }
 
-func merge(arr []int, temp []int, left int, middle int, right int) int64 {
+func merge(arr, temp []int, left, middle, right int) int64 {
 	var inversions int64
 
 	i, j := left, middle
@@ -74,7 +74,7 @@ func main() {
 		checkError(err)
 
 		arr := make([]int, n)
-		for i := 0; i < n; i++ {
+		for i := range n {
 			_, err = fmt.Fscan(reader, &arr[i])
 			checkError(err)
 		}
@@ -83,7 +83,8 @@ func main() {
 		fmt.Fprintln(writer, result)
 	}
 
-	writer.Flush()
+	err = writer.Flush()
+	checkError(err)
 }
 
 func checkError(err error) {

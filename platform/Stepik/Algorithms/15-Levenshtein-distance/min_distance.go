@@ -6,7 +6,7 @@ import (
 	"os"
 )
 
-func minDistance(word1 string, word2 string) int {
+func minDistance(word1, word2 string) int {
 	m, n := len(word1), len(word2)
 
 	dp := make([][]int, m+1)
@@ -28,14 +28,8 @@ func minDistance(word1 string, word2 string) int {
 			}
 		}
 	}
-	return dp[m][n]
-}
 
-func min(lhs, rhs int) int {
-	if lhs < rhs {
-		return lhs
-	}
-	return rhs
+	return dp[m][n]
 }
 
 func main() {
@@ -63,7 +57,8 @@ func main() {
 	result := minDistance(word1, word2)
 	fmt.Fprintln(writer, result)
 
-	writer.Flush()
+	err = writer.Flush()
+	checkError(err)
 }
 
 func checkError(err error) {

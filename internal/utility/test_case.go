@@ -5,11 +5,15 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"testing"
 	"time"
 
-	"testing"
-
 	"github.com/stretchr/testify/assert"
+)
+
+const (
+	InputPathEnv  = "INPUT_PATH"
+	OutputPathEnv = "OUTPUT_PATH"
 )
 
 type TestCase struct {
@@ -21,15 +25,11 @@ type TestCase struct {
 	Expected string
 }
 
-const INPUT_PATH_ENV = "INPUT_PATH"
-const OUTPUT_PATH_ENV = "OUTPUT_PATH"
-
 func (test *TestCase) RunTest(t *testing.T, run func()) {
 	t.Helper()
 	ast := assert.New(t)
 
-	err := os.Setenv(INPUT_PATH_ENV, test.In)
-	checkError(err)
+	t.Setenv(InputPathEnv, test.In)
 
 	dir, err := os.MkdirTemp("", "test_*_dir")
 	checkError(err)
@@ -37,30 +37,23 @@ func (test *TestCase) RunTest(t *testing.T, run func()) {
 
 	fileName := fmt.Sprintf("output.%d.txt", time.Now().UnixNano())
 	tempFileName := filepath.Join(dir, fileName)
-	err = os.Setenv(OUTPUT_PATH_ENV, tempFileName)
-	checkError(err)
+	t.Setenv(OutputPathEnv, tempFileName)
 
 	run()
 
-	content, err := os.ReadFile(test.In)
+	inputContent, err := os.ReadFile(test.In)
 	checkError(err)
-	test.Input = strings.TrimSpace(string(content))
+	test.Input = strings.TrimSpace(string(inputContent))
 	ast.NotEmpty(test.Input)
 
-	content, err = os.ReadFile(tempFileName)
-	checkError(err)
-	test.Output = strings.TrimSpace(string(content))
-
-	content, err = os.ReadFile(test.Out)
+	expectedContent, err := os.ReadFile(test.Out)
 	if err == nil {
-		test.Expected = strings.TrimSpace(string(content))
+		test.Expected = strings.TrimSpace(string(expectedContent))
 	}
 
-	err = os.Unsetenv(INPUT_PATH_ENV)
+	contentOutput, err := os.ReadFile(tempFileName) // #nosec G304
 	checkError(err)
-
-	err = os.Unsetenv(OUTPUT_PATH_ENV)
-	checkError(err)
+	test.Output = strings.TrimSpace(string(contentOutput))
 
 	ast.Equal(test.Expected, test.Output, "Test Case: %v %v", test.In, test.Out)
 }

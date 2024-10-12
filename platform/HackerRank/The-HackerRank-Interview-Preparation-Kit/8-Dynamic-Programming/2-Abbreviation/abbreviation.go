@@ -7,7 +7,7 @@ import (
 	"unicode"
 )
 
-func abbreviation(a string, b string) string {
+func abbreviation(a, b string) string {
 	if a == b {
 		return "YES"
 	}
@@ -64,20 +64,22 @@ func main() {
 	writer := bufio.NewWriterSize(stdout, 1024*1024)
 
 	var q int
-	_, _ = fmt.Fscanln(reader, &q)
+	_, err = fmt.Fscanln(reader, &q)
+	checkError(err)
 
-	var a, b string
-	for i := 0; i < q; i++ {
-		_, err = fmt.Fscanln(reader, &a)
+	var lhs, rhs string
+	for range q {
+		_, err = fmt.Fscanln(reader, &lhs)
 		checkError(err)
-		_, err = fmt.Fscanln(reader, &b)
+		_, err = fmt.Fscanln(reader, &rhs)
 		checkError(err)
 
-		answer := abbreviation(a, b)
+		answer := abbreviation(lhs, rhs)
 		fmt.Fprintln(writer, answer)
 	}
 
-	writer.Flush()
+	err = writer.Flush()
+	checkError(err)
 }
 
 func checkError(err error) {

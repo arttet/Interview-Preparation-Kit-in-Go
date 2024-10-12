@@ -50,7 +50,7 @@ func main() {
 		_, err = fmt.Fscan(reader, &n)
 		checkError(err)
 		queue := make([]int, n)
-		for i := 0; i < n; i++ {
+		for i := range n {
 			_, err = fmt.Fscan(reader, &queue[i])
 			checkError(err)
 		}
@@ -58,7 +58,8 @@ func main() {
 		fmt.Fprintln(writer, result)
 	}
 
-	writer.Flush()
+	err = writer.Flush()
+	checkError(err)
 }
 
 func checkError(err error) {

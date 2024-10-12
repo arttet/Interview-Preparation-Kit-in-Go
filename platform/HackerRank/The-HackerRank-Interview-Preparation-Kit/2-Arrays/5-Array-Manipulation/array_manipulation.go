@@ -21,7 +21,7 @@ func arrayManipulation(n int, queries [][]int) int64 {
 		arr[i] += arr[i-1]
 	}
 
-	var maximum = arr[0]
+	maximum := arr[0]
 	for _, value := range arr {
 		if maximum < value {
 			maximum = value
@@ -52,15 +52,18 @@ func main() {
 	checkError(err)
 
 	queries := make([][]int, m)
-	for i := 0; i < m; i++ {
-		queries[i] = make([]int, 3)
+	for i := range m {
+		const size = 3
+		queries[i] = make([]int, size)
 		_, err = fmt.Fscan(reader, &queries[i][0], &queries[i][1], &queries[i][2])
 		checkError(err)
 	}
 
 	result := arrayManipulation(n, queries)
 	fmt.Fprint(writer, result)
-	writer.Flush()
+
+	err = writer.Flush()
+	checkError(err)
 }
 
 func checkError(err error) {

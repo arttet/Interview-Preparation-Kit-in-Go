@@ -48,17 +48,20 @@ func main() {
 	writer := bufio.NewWriterSize(stdout, 1024*1024)
 
 	var n int
-	_, _ = fmt.Fscanln(reader, &n)
+	_, err = fmt.Fscanln(reader, &n)
+	checkError(err)
 
 	arr := make([]int, n)
-	for i := 0; i < n; i++ {
-		_, _ = fmt.Fscanln(reader, &arr[i])
+	for i := range n {
+		_, err = fmt.Fscanln(reader, &arr[i])
+		checkError(err)
 	}
 
 	result := candies(n, arr)
 	fmt.Fprintf(writer, "%d\n", result)
 
-	writer.Flush()
+	err = writer.Flush()
+	checkError(err)
 }
 
 func checkError(err error) {

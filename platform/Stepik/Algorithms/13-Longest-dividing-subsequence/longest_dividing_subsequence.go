@@ -14,7 +14,7 @@ func lengthOfLDS(arr []int) int {
 	result := 1
 	for i := 1; i < n; i++ {
 		dp[i] = 1
-		for j := 0; j < i; j++ {
+		for j := range i {
 			if arr[j] <= arr[i] && arr[i]%arr[j] == 0 {
 				dp[i] = max(dp[i], dp[j]+1)
 			}
@@ -47,7 +47,7 @@ func main() {
 	checkError(err)
 
 	arr := make([]int, n)
-	for i := 0; i < n; i++ {
+	for i := range n {
 		_, err = fmt.Fscan(reader, &arr[i])
 		checkError(err)
 	}
@@ -55,7 +55,8 @@ func main() {
 	result := lengthOfLDS(arr)
 	fmt.Fprint(writer, result)
 
-	writer.Flush()
+	err = writer.Flush()
+	checkError(err)
 }
 
 func checkError(err error) {

@@ -10,6 +10,8 @@ import (
 	"github.com/arttet/Interview-Preparation-Kit-in-Go/internal/utility"
 )
 
+var ErrTestPanicMock = errors.New("mock panic")
+
 func TestOK(t *testing.T) {
 	tests := []int{0, 1, 2, 3}
 	for _, i := range tests {
@@ -22,5 +24,7 @@ func TestOK(t *testing.T) {
 }
 
 func TestPanic(t *testing.T) {
-	assert.Panics(t, func() { checkError(errors.New("")) }, "The code did not panic")
+	t.Parallel()
+
+	assert.Panics(t, func() { checkError(ErrTestPanicMock) }, "The code did not panic")
 }

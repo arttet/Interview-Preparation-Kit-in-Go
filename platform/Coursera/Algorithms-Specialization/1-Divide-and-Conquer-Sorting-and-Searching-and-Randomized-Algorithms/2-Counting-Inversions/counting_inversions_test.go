@@ -11,6 +11,8 @@ import (
 	"github.com/arttet/Interview-Preparation-Kit-in-Go/internal/utility"
 )
 
+var ErrTestPanicMock = errors.New("mock panic")
+
 func TestOK(t *testing.T) {
 	N := 68
 	for i := 1; i <= N; i++ {
@@ -31,13 +33,16 @@ func TestCoursera(t *testing.T) {
 }
 
 func TestSort(t *testing.T) {
+	t.Parallel()
 	ast := assert.New(t)
 
 	input := []int{2, 1, 3, 1, 2}
 	ast.Equal(int64(4), countInversions(input))
-	ast.Equal(true, sort.IntsAreSorted(input))
+	ast.True(sort.IntsAreSorted(input))
 }
 
 func TestPanic(t *testing.T) {
-	assert.Panics(t, func() { checkError(errors.New("")) }, "The code did not panic")
+	t.Parallel()
+
+	assert.Panics(t, func() { checkError(ErrTestPanicMock) }, "The code did not panic")
 }

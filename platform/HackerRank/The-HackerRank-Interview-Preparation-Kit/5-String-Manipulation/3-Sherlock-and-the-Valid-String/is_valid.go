@@ -9,22 +9,25 @@ import (
 func isValid(s string) string {
 	counter := countLetters(s)
 
-	var max int
+	var maxValue int
 	var removed bool
 	for _, occurrence := range counter {
-		if occurrence == 0 || occurrence == max {
+		if occurrence == 0 || occurrence == maxValue {
 			continue
 		}
 
-		if max == 0 {
-			max = occurrence
+		if maxValue == 0 {
+			maxValue = occurrence
+
 			continue
 		}
 
-		if !removed && (occurrence == max+1 || occurrence == 1) {
+		if !removed && (occurrence == maxValue+1 || occurrence == 1) {
 			removed = true
+
 			continue
 		}
+
 		return "NO"
 	}
 
@@ -32,7 +35,9 @@ func isValid(s string) string {
 }
 
 func countLetters(s string) []int {
-	counts := make([]int, 26)
+	const alphabetSize = 26
+
+	counts := make([]int, alphabetSize)
 	for _, r := range s {
 		counts[r-'a']++
 	}
@@ -63,7 +68,8 @@ func main() {
 	result := isValid(s)
 	fmt.Fprintln(writer, result)
 
-	writer.Flush()
+	err = writer.Flush()
+	checkError(err)
 }
 
 func checkError(err error) {

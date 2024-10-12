@@ -23,7 +23,7 @@ func pointsAndSegmentsProblem(segments [][]int, points []int) []int {
 	n, m := len(segments), len(points)
 	arr := make([]point, 0, n+2*m)
 
-	for i := 0; i < n; i++ {
+	for i := range n {
 		arr = append(arr,
 			point{
 				value:  segments[i][0],
@@ -38,7 +38,7 @@ func pointsAndSegmentsProblem(segments [][]int, points []int) []int {
 		)
 	}
 
-	for i := 0; i < m; i++ {
+	for i := range m {
 		arr = append(arr, point{
 			value:  points[i],
 			index:  i,
@@ -88,14 +88,14 @@ func main() {
 	checkError(err)
 
 	segments := make([][]int, n)
-	for i := 0; i < n; i++ {
+	for i := range n {
 		segments[i] = make([]int, 2)
 		_, err = fmt.Fscanln(reader, &segments[i][0], &segments[i][1])
 		checkError(err)
 	}
 
 	points := make([]int, m)
-	for i := 0; i < m; i++ {
+	for i := range m {
 		_, err = fmt.Fscan(reader, &points[i])
 		checkError(err)
 	}
@@ -105,7 +105,8 @@ func main() {
 		fmt.Fprintf(writer, "%d ", counter)
 	}
 
-	writer.Flush()
+	err = writer.Flush()
+	checkError(err)
 }
 
 func checkError(err error) {

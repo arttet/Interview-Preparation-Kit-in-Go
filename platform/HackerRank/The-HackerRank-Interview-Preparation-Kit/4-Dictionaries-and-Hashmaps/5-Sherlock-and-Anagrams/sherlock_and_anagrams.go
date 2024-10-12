@@ -6,18 +6,18 @@ import (
 	"os"
 )
 
-func sherlockAndAnagrams(s string) int {
-	n := len(s)
+func sherlockAndAnagrams(str string) int {
+	n := len(str)
 	substrings := make([][][]int, n-1)
 
 	// Work on one small test case:
 	// "abba":
-	// a b b a
-	// ab bb ba
-	// abb bba
+	// "a" | "b" | "b" | "a"
+	// "ab" | "bb" | "ba"
+	// "abb" | "bba"
 	for length := 1; length < n; length++ {
 		for begin := 0; begin <= n-length; begin++ {
-			substring := s[begin : begin+length]
+			substring := str[begin : begin+length]
 			substrings[length-1] = append(substrings[length-1], countLetters(substring))
 		}
 	}
@@ -25,7 +25,7 @@ func sherlockAndAnagrams(s string) int {
 	var counter int
 	for k := range substrings {
 		length := len(substrings[k])
-		for i := 0; i < length; i++ {
+		for i := range length {
 			for j := i + 1; j < length; j++ {
 				if isAnagram(substrings[k][i], substrings[k][j]) {
 					counter++
@@ -37,7 +37,7 @@ func sherlockAndAnagrams(s string) int {
 	return counter
 }
 
-func isAnagram(countsA []int, countsB []int) bool {
+func isAnagram(countsA, countsB []int) bool {
 	for i := range countsA {
 		if countsA[i] != countsB[i] {
 			return false
@@ -48,10 +48,13 @@ func isAnagram(countsA []int, countsB []int) bool {
 }
 
 func countLetters(s string) []int {
-	counts := make([]int, 26)
+	const alphabetSize = 26
+
+	counts := make([]int, alphabetSize)
 	for _, ch := range s {
 		counts[ch-'a']++
 	}
+
 	return counts
 }
 
@@ -84,7 +87,8 @@ func main() {
 		fmt.Fprintln(writer, result)
 	}
 
-	writer.Flush()
+	err = writer.Flush()
+	checkError(err)
 }
 
 func checkError(err error) {

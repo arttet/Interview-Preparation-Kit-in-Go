@@ -10,17 +10,18 @@ import (
 // An Integer represents a signed multi-precision integer.
 type Integer []int
 
-func multiplication(s1, s2 string) string {
-	n := getPowerOfTwo(max(len(s1), len(s2)))
+func multiplication(lhs, rhs string) string {
+	n := getPowerOfTwo(max(len(lhs), len(rhs)))
 
-	x := newInteger(s1, n)
-	y := newInteger(s2, n)
-	result := make(Integer, 6*n)
+	x := newInteger(lhs, n)
+	y := newInteger(rhs, n)
+	result := make(Integer, 6*n) //nolint: mnd
 
 	karatsuba(x, y, result, n)
 	result = result[:n<<1]
 
 	result.doCarry()
+
 	return result.String()
 }
 
@@ -33,11 +34,12 @@ func multiplication(s1, s2 string) string {
 //
 // The result must have space for 6n digits.
 // The result will be in only the first 2n digits.
-func karatsuba(x Integer, y Integer, result Integer, n int) {
+func karatsuba(x, y, result Integer, n int) {
 	const cutOff = 4
 
 	if n <= cutOff {
 		gradeSchoolMultiplication(x, y, result, n)
+
 		return
 	}
 
@@ -48,8 +50,7 @@ func karatsuba(x Integer, y Integer, result Integer, n int) {
 	p := result[n*5:]    // p := a + b
 	q := result[n*5+m:]  // q := c + d
 
-	var i int
-	for i = 0; i < m; i++ {
+	for i := range m {
 		p[i] = a[i] + b[i]
 		q[i] = c[i] + d[i]
 	}
@@ -62,25 +63,23 @@ func karatsuba(x Integer, y Integer, result Integer, n int) {
 	karatsuba(a, c, ac, m)
 	karatsuba(p, q, adbc, m)
 
-	for i = 0; i < n; i++ {
+	for i := range n {
 		adbc[i] = adbc[i] - ac[i] - bd[i] // adbc := pq − ac − bd
 	}
 
 	// ac^{10 * n} + adbc ^{10 * n/2} + bd
-	for i = 0; i < n; i++ {
+	for i := range n {
 		result[i+m] += adbc[i]
 	}
 }
 
-func gradeSchoolMultiplication(x Integer, y Integer, result Integer, n int) {
-	var i, j int
-
-	for i = 0; i < n<<1; i++ {
+func gradeSchoolMultiplication(x, y, result Integer, n int) {
+	for i := range n << 1 {
 		result[i] = 0
 	}
 
-	for i = 0; i < n; i++ {
-		for j = 0; j < n; j++ {
+	for i := range n {
+		for j := range n {
 			result[i+j] += x[i] * y[j]
 		}
 	}
@@ -129,14 +128,14 @@ func (x Integer) String() string {
 		n--
 	}
 
-	s := make([]byte, n)
+	str := make([]byte, n)
 
 	for j := 0; i >= 0; i-- {
-		s[j] = byte(x[i]) + '0'
+		str[j] = byte(x[i]) + '0'
 		j++
 	}
 
-	return string(s)
+	return string(str)
 }
 
 func main() {
@@ -163,7 +162,8 @@ func main() {
 	result := multiplication(left, right)
 	fmt.Fprint(writer, result)
 
-	writer.Flush()
+	err = writer.Flush()
+	checkError(err)
 }
 
 func checkError(err error) {
@@ -176,5 +176,6 @@ func getPowerOfTwo(n int) int {
 	if n&(n-1) == 0 {
 		return n
 	}
+
 	return 2 << int(math.Log(float64(n))/math.Log(2))
 }

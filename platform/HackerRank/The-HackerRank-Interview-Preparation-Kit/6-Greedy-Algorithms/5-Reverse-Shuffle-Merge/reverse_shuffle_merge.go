@@ -6,37 +6,37 @@ import (
 	"os"
 )
 
-func reverseShuffleMerge(s string) string {
+func reverseShuffleMerge(str string) string {
 	unused := [26]int{}
 	used := [26]int{}
 	required := [26]int{}
 
-	for i := range s {
-		unused[s[i]-'a']++
+	for i := range str {
+		unused[str[i]-'a']++
 	}
 
 	for i := range unused {
 		required[i] = unused[i] / 2
 	}
 
-	n := len(s)
+	n := len(str)
 	result := make([]byte, n/2)
 
 	for i, j := n-1, 0; i >= 0; i-- {
-		ch := s[i] - 'a'
+		char := str[i] - 'a'
 
-		if i == n-1 || used[ch] < required[ch] {
-			for j > 0 && ch < result[j-1] && used[result[j-1]]-1+unused[result[j-1]] >= required[result[j-1]] {
+		if i == n-1 || used[char] < required[char] {
+			for j > 0 && char < result[j-1] && used[result[j-1]]-1+unused[result[j-1]] >= required[result[j-1]] {
 				j--
 				used[result[j]]--
 			}
 
-			result[j] = ch
+			result[j] = char
 			j++
-			used[ch]++
+			used[char]++
 		}
 
-		unused[ch]--
+		unused[char]--
 	}
 
 	for i := range result {
@@ -68,7 +68,9 @@ func main() {
 
 	result := reverseShuffleMerge(s)
 	fmt.Fprint(writer, result)
-	writer.Flush()
+
+	err = writer.Flush()
+	checkError(err)
 }
 
 func checkError(err error) {

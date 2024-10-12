@@ -6,9 +6,9 @@ import (
 	"os"
 )
 
-func commonChild(s1 string, s2 string) int {
+func commonChild(lhs, rhs string) int {
 	var i, j int
-	m, n := len(s1), len(s2)
+	m, n := len(lhs), len(rhs)
 
 	longestCommonSubsequence := make([][]int, m+1)
 	for i = range longestCommonSubsequence {
@@ -17,7 +17,7 @@ func commonChild(s1 string, s2 string) int {
 
 	for i = 1; i <= m; i++ {
 		for j = 1; j <= n; j++ {
-			if s1[i-1] == s2[j-1] {
+			if lhs[i-1] == rhs[j-1] {
 				longestCommonSubsequence[i][j] = longestCommonSubsequence[i-1][j-1] + 1
 			} else {
 				longestCommonSubsequence[i][j] = max(
@@ -53,7 +53,8 @@ func main() {
 	result := commonChild(s1, s2)
 	fmt.Fprintln(writer, result)
 
-	writer.Flush()
+	err = writer.Flush()
+	checkError(err)
 }
 
 func checkError(err error) {

@@ -1,0 +1,69 @@
+# See https://golangci-lint.run/usage/linters/
+
+linters:
+  enable-all: true
+  disable:
+    # Note: deprecated linters
+    - gomnd
+    - execinquery
+    - exportloopref
+    # Note: disabled linters
+    - varnamelen
+    # FIXME: fix issues
+    - wsl
+
+linters-settings:
+  cyclop:
+    max-complexity: 15
+  depguard:
+    rules:
+      main:
+        list-mode: lax
+        files:
+          - '!$test'
+        allow:
+          - '$gostd'
+  exhaustruct:
+    exclude:
+      - github.com/arttet/Interview-Preparation-Kit-in-Go/internal/utility.TestCase
+  gci:
+    sections:
+      - standard
+      - default
+      - localmodule
+  gofmt:
+    rewrite-rules:
+      - pattern: 'interface{}'
+        replacement: 'any'
+  gofumpt:
+    module-path: github.com/arttet/Interview-Preparation-Kit-in-Go
+    extra-rules: true
+  goimports:
+    local-prefixes: github.com/arttet/Interview-Preparation-Kit-in-Go
+  gosec:
+    severity: low
+    confidence: low
+    config:
+      global:
+        nosec: true
+        show-ignored: true
+        audit: true
+  gosmopolitan:
+    allow-time-local: true
+  govet:
+    enable-all: true
+  mnd:
+    ignored-numbers:
+      - '2'
+      - '1024'
+  paralleltest:
+    ignore-missing: true
+
+issues:
+  max-same-issues: 50
+
+output:
+  show-stats: true
+
+run:
+  timeout: 5m

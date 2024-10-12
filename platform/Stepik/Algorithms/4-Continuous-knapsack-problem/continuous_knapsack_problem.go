@@ -14,7 +14,7 @@ type knapsack struct {
 
 func continuousKnapsackProblem(arr []knapsack, weight int) float64 {
 	sort.Slice(arr, func(i, j int) bool {
-		return arr[i].cost*arr[j].weight > arr[j].cost*arr[i].weight // nolint: gocritic
+		return arr[i].cost*arr[j].weight > arr[j].cost*arr[i].weight
 	})
 
 	var sum float64
@@ -26,6 +26,7 @@ func continuousKnapsackProblem(arr []knapsack, weight int) float64 {
 			weight -= item.weight
 		} else {
 			sum += float64(weight*item.cost) / float64(item.weight)
+
 			break
 		}
 	}
@@ -55,7 +56,7 @@ func main() {
 	checkError(err)
 
 	arr := make([]knapsack, n)
-	for i := 0; i < n; i++ {
+	for i := range n {
 		_, err = fmt.Fscan(reader, &arr[i].cost, &arr[i].weight)
 		checkError(err)
 	}
@@ -63,7 +64,8 @@ func main() {
 	result := continuousKnapsackProblem(arr, weight)
 	fmt.Fprintf(writer, "%0.3f", result)
 
-	writer.Flush()
+	err = writer.Flush()
+	checkError(err)
 }
 
 func checkError(err error) {

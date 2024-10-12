@@ -6,17 +6,26 @@ import (
 	"os"
 )
 
-type node struct {
+type Node struct {
+	left  *Node
+	right *Node
 	data  int
 	level int
-	left  *node
-	right *node
 }
 
-func newTree(indexes [][]int) *node {
-	var queue []*node
+func NewNode(data, level int) *Node {
+	return &Node{
+		data:  data,
+		level: level,
+		left:  nil,
+		right: nil,
+	}
+}
 
-	root := &node{1, 1, nil, nil}
+func newTree(indexes [][]int) *Node {
+	var queue []*Node
+
+	root := NewNode(1, 1)
 	queue = append(queue, root)
 
 	for i := range indexes {
@@ -24,13 +33,13 @@ func newTree(indexes [][]int) *node {
 		current := queue[0]
 
 		if left != -1 {
-			leftNode := &node{left, current.level + 1, nil, nil}
+			leftNode := NewNode(left, current.level+1)
 			current.left = leftNode
 			queue = append(queue, leftNode)
 		}
 
 		if right != -1 {
-			rightNode := &node{right, current.level + 1, nil, nil}
+			rightNode := NewNode(right, current.level+1)
 			current.right = rightNode
 			queue = append(queue, rightNode)
 		}
@@ -41,7 +50,7 @@ func newTree(indexes [][]int) *node {
 	return root
 }
 
-func (tree *node) traverseInorder(result *[]int) {
+func (tree *Node) traverseInorder(result *[]int) {
 	if tree.left != nil {
 		tree.left.traverseInorder(result)
 	}
@@ -53,7 +62,7 @@ func (tree *node) traverseInorder(result *[]int) {
 	}
 }
 
-func (tree *node) swap(k int) {
+func (tree *Node) swap(k int) {
 	if tree.left != nil {
 		tree.left.swap(k)
 	}
@@ -100,7 +109,7 @@ func main() {
 	checkError(err)
 
 	indexes := make([][]int, n)
-	for i := 0; i < n; i++ {
+	for i := range n {
 		indexes[i] = make([]int, 2)
 
 		_, err = fmt.Fscan(reader, &indexes[i][0], &indexes[i][1])
@@ -112,7 +121,7 @@ func main() {
 	checkError(err)
 
 	queries := make([]int, k)
-	for i := 0; i < k; i++ {
+	for i := range k {
 		_, err = fmt.Fscan(reader, &queries[i])
 		checkError(err)
 	}
@@ -133,7 +142,8 @@ func main() {
 		}
 	}
 
-	writer.Flush()
+	err = writer.Flush()
+	checkError(err)
 }
 
 func checkError(err error) {

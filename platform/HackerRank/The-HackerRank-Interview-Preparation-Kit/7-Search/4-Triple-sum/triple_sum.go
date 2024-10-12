@@ -7,7 +7,7 @@ import (
 	"sort"
 )
 
-func triplets(a []int, b []int, c []int) int64 {
+func triplets(a, b, c []int) int64 {
 	a = removeDuplicates(a)
 	b = removeDuplicates(b)
 	c = removeDuplicates(c)
@@ -64,19 +64,19 @@ func main() {
 	checkError(err)
 
 	a := make([]int, lenA)
-	for i := 0; i < lenA; i++ {
+	for i := range lenA {
 		_, err = fmt.Fscan(reader, &a[i])
 		checkError(err)
 	}
 
 	b := make([]int, lenB)
-	for i := 0; i < lenB; i++ {
+	for i := range lenB {
 		_, err = fmt.Fscan(reader, &b[i])
 		checkError(err)
 	}
 
 	c := make([]int, lenC)
-	for i := 0; i < lenC; i++ {
+	for i := range lenC {
 		_, err = fmt.Fscan(reader, &c[i])
 		checkError(err)
 	}
@@ -84,7 +84,8 @@ func main() {
 	result := triplets(a, b, c)
 	fmt.Fprint(writer, result)
 
-	writer.Flush()
+	err = writer.Flush()
+	checkError(err)
 }
 
 func checkError(err error) {

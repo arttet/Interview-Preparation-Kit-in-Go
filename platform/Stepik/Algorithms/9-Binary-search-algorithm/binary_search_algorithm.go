@@ -12,6 +12,7 @@ func binarySearchAlgorithm(arr []int, x int) int {
 	if i < len(arr) && arr[i] == x {
 		return i + 1
 	}
+
 	return -1
 }
 
@@ -36,24 +37,25 @@ func main() {
 	checkError(err)
 
 	arr := make([]int, n)
-	for i := 0; i < n; i++ {
+	for i := range n {
 		_, err = fmt.Fscan(reader, &arr[i])
 		checkError(err)
 	}
 
-	var k, x int
+	var k, value int
 	_, err = fmt.Fscan(reader, &k)
 	checkError(err)
 
-	for i := 0; i < k; i++ {
-		_, err = fmt.Fscan(reader, &x)
+	for range k {
+		_, err = fmt.Fscan(reader, &value)
 		checkError(err)
 
-		result := binarySearchAlgorithm(arr, x)
+		result := binarySearchAlgorithm(arr, value)
 		fmt.Fprintf(writer, "%d ", result)
 	}
 
-	writer.Flush()
+	err = writer.Flush()
+	checkError(err)
 }
 
 func checkError(err error) {

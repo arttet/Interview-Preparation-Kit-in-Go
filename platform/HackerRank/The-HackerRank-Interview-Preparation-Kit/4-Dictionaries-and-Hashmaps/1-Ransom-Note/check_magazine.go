@@ -6,15 +6,14 @@ import (
 	"os"
 )
 
-func checkMagazine(magazine []string, note []string) string {
+func checkMagazine(magazine, note []string) string {
 	dict := make(map[string]int)
 
-	var i int
-	for i = range magazine {
+	for i := range magazine {
 		dict[magazine[i]]++
 	}
 
-	for i = range note {
+	for i := range note {
 		if dict[note[i]] > 0 {
 			dict[note[i]]--
 		} else {
@@ -41,26 +40,27 @@ func main() {
 	reader := bufio.NewReaderSize(stdin, 1024*1024)
 	writer := bufio.NewWriterSize(stdout, 1024*1024)
 
-	var m, n, i int
+	var m, n int
 	_, err = fmt.Fscan(reader, &m, &n)
 	checkError(err)
 
 	magazine := make([]string, m)
-	for i = 0; i < m; i++ {
+	for i := range m {
 		_, err = fmt.Fscan(reader, &magazine[i])
 		checkError(err)
 	}
 
 	note := make([]string, n)
-	for i = 0; i < n; i++ {
+	for i := range n {
 		_, err = fmt.Fscan(reader, &note[i])
 		checkError(err)
 	}
 
 	result := checkMagazine(magazine, note)
-
 	fmt.Fprintln(writer, result)
-	writer.Flush()
+
+	err = writer.Flush()
+	checkError(err)
 }
 
 func checkError(err error) {

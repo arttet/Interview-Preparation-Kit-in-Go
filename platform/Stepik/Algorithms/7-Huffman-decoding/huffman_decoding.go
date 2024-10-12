@@ -8,42 +8,52 @@ import (
 )
 
 type HuffmanNode struct {
-	value rune
 	left  *HuffmanNode
 	right *HuffmanNode
+	value rune
+}
+
+func newHuffmanNode() *HuffmanNode {
+	return &HuffmanNode{
+		value: 0,
+		left:  nil,
+		right: nil,
+	}
 }
 
 func buildTree(codes map[rune]string) *HuffmanNode {
-	root := &HuffmanNode{}
+	root := newHuffmanNode()
 
 	var current *HuffmanNode
-	for ch := range codes {
+	for char := range codes {
 		current = root
 
-		for _, code := range codes[ch] {
+		for _, code := range codes[char] {
 			if code == '0' {
 				if current.left == nil {
-					current.left = &HuffmanNode{}
+					current.left = newHuffmanNode()
 				}
 				current = current.left
 			} else {
 				if current.right == nil {
-					current.right = &HuffmanNode{}
+					current.right = newHuffmanNode()
 				}
 				current = current.right
 			}
 		}
-		current.value = ch
+		current.value = char
 	}
 
 	return root
 }
 
 func huffmanDecode(codes map[rune]string, encoded string) string {
+	const initialCapacity = 64
+
 	root := buildTree(codes)
 
 	var result strings.Builder
-	result.Grow(64)
+	result.Grow(initialCapacity)
 
 	current := root
 	for _, code := range encoded {
@@ -99,7 +109,8 @@ func main() {
 	str := huffmanDecode(codes, encoded)
 	fmt.Fprint(writer, str)
 
-	writer.Flush()
+	err = writer.Flush()
+	checkError(err)
 }
 
 func checkError(err error) {

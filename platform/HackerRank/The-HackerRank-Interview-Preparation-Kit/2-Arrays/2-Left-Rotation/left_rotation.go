@@ -10,7 +10,7 @@ func leftRotation(arr []int, d int) []int {
 	n := len(arr)
 	result := make([]int, n)
 
-	for i := 0; i < n; i++ {
+	for i := range n {
 		shift := (n - d + i) % n
 		result[shift] = arr[i]
 	}
@@ -39,7 +39,7 @@ func main() {
 	checkError(err)
 
 	arr := make([]int, n)
-	for i := 0; i < n; i++ {
+	for i := range n {
 		_, err = fmt.Fscan(reader, &arr[i])
 		checkError(err)
 	}
@@ -48,7 +48,9 @@ func main() {
 	for i := range result {
 		fmt.Fprintf(writer, "%d ", result[i])
 	}
-	writer.Flush()
+
+	err = writer.Flush()
+	checkError(err)
 }
 
 func checkError(err error) {
