@@ -39,17 +39,19 @@ func main() {
 	reader := bufio.NewReaderSize(stdin, 1024*1024)
 	writer := bufio.NewWriterSize(stdout, 1024*1024)
 
-	var s string
-	_, err = fmt.Fscan(reader, &s)
+	var str string
+	_, err = fmt.Fscan(reader, &str)
 	checkError(err)
 
 	var n int64
 	_, err = fmt.Fscan(reader, &n)
 	checkError(err)
 
-	result := repeatedString(s, n)
+	result := repeatedString(str, n)
 	fmt.Fprintln(writer, result)
-	writer.Flush()
+
+	err = writer.Flush()
+	checkError(err)
 }
 
 func checkError(err error) {

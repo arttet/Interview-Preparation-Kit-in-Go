@@ -7,14 +7,14 @@ import (
 )
 
 // FibonacciNumber returns the nth value in the fibonacci series.
-func FibonacciNumber(n uint, m uint) uint {
+func FibonacciNumber(n, m uint) uint {
 	F := [2][2]uint{{1, 1}, {1, 0}}
 	power(&F, n-1, m)
 
 	return F[0][0]
 }
 
-func power(fib *[2][2]uint, n uint, m uint) {
+func power(fib *[2][2]uint, n, m uint) {
 	if n == 0 || n == 1 {
 		return
 	}
@@ -28,7 +28,7 @@ func power(fib *[2][2]uint, n uint, m uint) {
 	}
 }
 
-func multiply(lhs *[2][2]uint, rhs *[2][2]uint, mod uint) {
+func multiply(lhs, rhs *[2][2]uint, mod uint) {
 	a := lhs[0][0]*rhs[0][0] + lhs[0][1]*rhs[1][0]
 	b := lhs[0][0]*rhs[0][1] + lhs[0][1]*rhs[1][1]
 	c := lhs[1][0]*rhs[0][0] + lhs[1][1]*rhs[1][0]
@@ -64,7 +64,8 @@ func main() {
 	result := FibonacciNumber(n, m)
 	fmt.Fprint(writer, result)
 
-	writer.Flush()
+	err = writer.Flush()
+	checkError(err)
 }
 
 func checkError(err error) {

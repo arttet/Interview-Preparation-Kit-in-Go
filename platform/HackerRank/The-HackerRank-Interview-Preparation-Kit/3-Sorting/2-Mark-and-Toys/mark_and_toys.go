@@ -43,14 +43,16 @@ func main() {
 	checkError(err)
 
 	arr := make([]int, n)
-	for i := 0; i < n; i++ {
+	for i := range n {
 		_, err = fmt.Fscan(reader, &arr[i])
 		checkError(err)
 	}
 
 	result := maximumToys(arr, k)
 	fmt.Fprint(writer, result)
-	writer.Flush()
+
+	err = writer.Flush()
+	checkError(err)
 }
 
 func checkError(err error) {

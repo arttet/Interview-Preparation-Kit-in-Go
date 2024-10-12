@@ -12,7 +12,7 @@ func getMinimumCost(k int, c []int) int {
 
 	var minCost int
 	if n := len(c); k >= n {
-		for i := 0; i < n; i++ {
+		for i := range n {
 			minCost += c[i]
 		}
 	} else {
@@ -53,14 +53,16 @@ func main() {
 	checkError(err)
 
 	arr := make([]int, n)
-	for i := 0; i < n; i++ {
+	for i := range n {
 		_, err = fmt.Fscan(reader, &arr[i])
 		checkError(err)
 	}
 
 	result := getMinimumCost(k, arr)
 	fmt.Fprint(writer, result)
-	writer.Flush()
+
+	err = writer.Flush()
+	checkError(err)
 }
 
 func checkError(err error) {

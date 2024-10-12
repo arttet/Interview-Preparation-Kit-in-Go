@@ -3,11 +3,8 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"math/bits"
 	"os"
 )
-
-const minInt int = (1 << bits.UintSize) / -2
 
 func maxSubsetSum(arr []int) int {
 	n := len(arr)
@@ -20,16 +17,6 @@ func maxSubsetSum(arr []int) int {
 	}
 
 	return last
-}
-
-func max(nums ...int) int {
-	maximum := minInt
-	for _, num := range nums {
-		if maximum < num {
-			maximum = num
-		}
-	}
-	return maximum
 }
 
 func main() {
@@ -49,17 +36,20 @@ func main() {
 	writer := bufio.NewWriterSize(stdout, 1024*1024)
 
 	var n int
-	_, _ = fmt.Fscanln(reader, &n)
+	_, err = fmt.Fscanln(reader, &n)
+	checkError(err)
 
 	arr := make([]int, n)
-	for i := 0; i < n; i++ {
-		_, _ = fmt.Fscan(reader, &arr[i])
+	for i := range n {
+		_, err = fmt.Fscan(reader, &arr[i])
+		checkError(err)
 	}
 
 	answer := maxSubsetSum(arr)
 	fmt.Fprintln(writer, answer)
 
-	writer.Flush()
+	err = writer.Flush()
+	checkError(err)
 }
 
 func checkError(err error) {

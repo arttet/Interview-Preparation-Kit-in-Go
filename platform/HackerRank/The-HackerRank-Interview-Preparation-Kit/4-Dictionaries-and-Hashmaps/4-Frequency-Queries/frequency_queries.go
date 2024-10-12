@@ -6,6 +6,12 @@ import (
 	"os"
 )
 
+const (
+	InsertCase = iota + 1
+	DeleteCase
+	CheckCase
+)
+
 func frequencyQueries(queries [][]int) []int {
 	var result []int
 
@@ -14,14 +20,14 @@ func frequencyQueries(queries [][]int) []int {
 
 	for _, query := range queries {
 		switch action, value := query[0], query[1]; action {
-		case 1:
+		case InsertCase:
 			freq := number[value]
 			number[value]++
 			frequency[number[value]]++
 			if freq > 0 {
 				frequency[freq]--
 			}
-		case 2:
+		case DeleteCase:
 			if freq, ok := number[value]; ok {
 				number[value]--
 				if number[value] == 0 {
@@ -35,7 +41,7 @@ func frequencyQueries(queries [][]int) []int {
 					delete(frequency, freq)
 				}
 			}
-		case 3:
+		case CheckCase:
 			item := 0
 			if freq, ok := frequency[value]; ok && freq > 0 {
 				item = 1
@@ -68,7 +74,7 @@ func main() {
 	checkError(err)
 
 	queries := make([][]int, q)
-	for i := 0; i < q; i++ {
+	for i := range q {
 		queries[i] = make([]int, 2)
 		_, err = fmt.Fscan(reader, &queries[i][0], &queries[i][1])
 		checkError(err)
@@ -79,7 +85,8 @@ func main() {
 		fmt.Fprintln(writer, result[i])
 	}
 
-	writer.Flush()
+	err = writer.Flush()
+	checkError(err)
 }
 
 func checkError(err error) {

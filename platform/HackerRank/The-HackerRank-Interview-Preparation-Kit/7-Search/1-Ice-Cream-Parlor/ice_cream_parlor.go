@@ -6,7 +6,9 @@ import (
 	"os"
 )
 
-func whatFlavors(costs []int, money int) (lhs int, rhs int) {
+func whatFlavors(costs []int, money int) (int, int) {
+	var lhs, rhs int
+
 	mapping := make(map[int]int)
 
 	for i, v := range costs {
@@ -42,15 +44,17 @@ func main() {
 	_, err = fmt.Fscan(reader, &t)
 	checkError(err)
 
-	var money, n int
-	var lhs, rhs int
+	var (
+		money, n int
+		lhs, rhs int
+	)
 
-	for i := 0; i < t; i++ {
+	for range t {
 		_, err = fmt.Fscan(reader, &money, &n)
 		checkError(err)
 
 		costs := make([]int, n)
-		for j := 0; j < n; j++ {
+		for j := range n {
 			_, err = fmt.Fscan(reader, &costs[j])
 			checkError(err)
 		}
@@ -59,7 +63,8 @@ func main() {
 		fmt.Fprintln(writer, lhs, rhs)
 	}
 
-	writer.Flush()
+	err = writer.Flush()
+	checkError(err)
 }
 
 func checkError(err error) {

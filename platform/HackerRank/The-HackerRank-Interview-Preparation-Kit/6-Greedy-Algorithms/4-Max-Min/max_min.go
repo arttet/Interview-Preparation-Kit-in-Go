@@ -13,7 +13,7 @@ func maxMin(k int, arr []int) int {
 	})
 
 	result := arr[len(arr)-1]
-	for i := 0; i < len(arr)-k+1; i++ {
+	for i := range len(arr) - k + 1 {
 		if value := arr[i+k-1] - arr[i]; value < result {
 			result = value
 		}
@@ -43,14 +43,16 @@ func main() {
 	checkError(err)
 
 	arr := make([]int, n)
-	for i := 0; i < n; i++ {
+	for i := range n {
 		_, err = fmt.Fscan(reader, &arr[i])
 		checkError(err)
 	}
 
 	result := maxMin(k, arr)
 	fmt.Fprint(writer, result)
-	writer.Flush()
+
+	err = writer.Flush()
+	checkError(err)
 }
 
 func checkError(err error) {

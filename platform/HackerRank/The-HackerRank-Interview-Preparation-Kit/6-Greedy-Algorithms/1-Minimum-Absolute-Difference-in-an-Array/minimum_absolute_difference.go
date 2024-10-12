@@ -11,8 +11,8 @@ import (
 func minimumAbsoluteDifference(arr []int) int {
 	sort.Ints(arr)
 
-	var result int = math.MaxInt32
-	for i := 0; i < len(arr)-1; i++ {
+	result := math.MaxInt32
+	for i := range len(arr) - 1 {
 		if diff := arr[i+1] - arr[i]; diff < result {
 			result = diff
 		}
@@ -42,14 +42,16 @@ func main() {
 	checkError(err)
 
 	arr := make([]int, n)
-	for i := 0; i < n; i++ {
+	for i := range n {
 		_, err = fmt.Fscan(reader, &arr[i])
 		checkError(err)
 	}
 
 	result := minimumAbsoluteDifference(arr)
 	fmt.Fprint(writer, result)
-	writer.Flush()
+
+	err = writer.Flush()
+	checkError(err)
 }
 
 func checkError(err error) {

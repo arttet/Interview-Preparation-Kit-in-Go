@@ -6,16 +6,16 @@ import (
 	"os"
 )
 
-func twoStrings(s1 string, s2 string) string {
+func twoStrings(lhs, rhs string) string {
 	dict := make(map[rune]bool)
 
-	var ch rune
-	for _, ch = range s1 {
-		dict[ch] = true
+	var char rune
+	for _, char = range lhs {
+		dict[char] = true
 	}
 
-	for _, ch = range s2 {
-		if dict[ch] {
+	for _, char = range rhs {
+		if dict[char] {
 			return "YES"
 		}
 	}
@@ -52,7 +52,8 @@ func main() {
 		fmt.Fprintln(writer, result)
 	}
 
-	writer.Flush()
+	err = writer.Flush()
+	checkError(err)
 }
 
 func checkError(err error) {

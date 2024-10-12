@@ -7,22 +7,24 @@ import (
 	"os"
 )
 
-// An IntHeap is a min-heap of ints.
-type IntHeap []int
+// An MaxIntHeap is a min-heap of ints.
+type MaxIntHeap []int
 
-func (h IntHeap) Len() int           { return len(h) }
-func (h IntHeap) Less(i, j int) bool { return h[i] > h[j] }
-func (h IntHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
+func (h MaxIntHeap) Len() int           { return len(h) }
+func (h MaxIntHeap) Less(i, j int) bool { return h[i] > h[j] }
+func (h MaxIntHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
 
-func (h *IntHeap) Push(x interface{}) {
-	*h = append(*h, x.(int))
+func (h *MaxIntHeap) Push(value any) {
+	val, _ := value.(int)
+	*h = append(*h, val)
 }
 
-func (h *IntHeap) Pop() interface{} {
+func (h *MaxIntHeap) Pop() any {
 	old := *h
 	n := len(old)
 	x := old[n-1]
 	*h = old[0 : n-1]
+
 	return x
 }
 
@@ -49,22 +51,25 @@ func main() {
 	_, err = fmt.Fscan(reader, &n)
 	checkError(err)
 
-	h := &IntHeap{}
-	heap.Init(h)
+	maxHeap := &MaxIntHeap{}
+	heap.Init(maxHeap)
 
 	for ; n > 0; n-- {
-		_, _ = fmt.Fscan(reader, &command)
+		_, err = fmt.Fscan(reader, &command)
+		checkError(err)
+
 		if command == "Insert" {
 			_, err = fmt.Fscan(reader, &value)
 			checkError(err)
 
-			heap.Push(h, value)
-		} else if command == "ExtractMax" && h.Len() > 0 {
-			fmt.Fprintf(writer, "%d\n", heap.Pop(h))
+			heap.Push(maxHeap, value)
+		} else if command == "ExtractMax" && maxHeap.Len() > 0 {
+			fmt.Fprintf(writer, "%d\n", heap.Pop(maxHeap))
 		}
 	}
 
-	writer.Flush()
+	err = writer.Flush()
+	checkError(err)
 }
 
 func checkError(err error) {

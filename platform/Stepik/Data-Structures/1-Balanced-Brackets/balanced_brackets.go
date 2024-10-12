@@ -9,12 +9,12 @@ import (
 )
 
 type pair struct {
-	ch    rune
+	char  rune
 	index int
 }
 
-func isBalanced(s string) string {
-	stack := make([]pair, 0, len(s))
+func isBalanced(str string) string {
+	stack := make([]pair, 0, len(str))
 
 	parentheses := map[rune]byte{
 		'{': 1,
@@ -25,10 +25,10 @@ func isBalanced(s string) string {
 		')': 2,
 	}
 
-	for i, ch := range s {
-		if value := parentheses[ch]; value == 1 {
+	for i, char := range str {
+		if value := parentheses[char]; value == 1 {
 			stack = append(stack, pair{
-				ch:    ch,
+				char:  char,
 				index: i,
 			})
 		} else if value == 2 {
@@ -40,7 +40,7 @@ func isBalanced(s string) string {
 			top := stack[n-1]
 			stack = stack[:n-1]
 
-			if top.ch != '{' && ch == '}' || top.ch != '[' && ch == ']' || top.ch != '(' && ch == ')' {
+			if top.char != '{' && char == '}' || top.char != '[' && char == ']' || top.char != '(' && char == ')' {
 				return strconv.Itoa(i + 1)
 			}
 		}
@@ -74,12 +74,14 @@ func main() {
 
 	fmt.Fprintf(writer, "%s\n", result)
 
-	writer.Flush()
+	err = writer.Flush()
+	checkError(err)
 }
 
 func readLine(reader *bufio.Reader) string {
 	str, _, err := reader.ReadLine()
 	checkError(err)
+
 	return strings.TrimRight(string(str), "\r\n")
 }
 

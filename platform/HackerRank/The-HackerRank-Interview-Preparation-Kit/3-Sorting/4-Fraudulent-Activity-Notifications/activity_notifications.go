@@ -8,11 +8,12 @@ import (
 
 const maxExpenditure = 201
 
-func activityNotifications(expenditures []int, d int) (notifications int) { // nolint: gocognit
-	histogram := make([]int, maxExpenditure)
-
+func activityNotifications(expenditures []int, d int) int {
+	var notifications int
 	var i, j int
-	for i = 0; i < d; i++ {
+
+	histogram := make([]int, maxExpenditure)
+	for i = 0; i < d; i++ { //nolint: intrange
 		histogram[expenditures[i]]++
 	}
 
@@ -22,12 +23,13 @@ func activityNotifications(expenditures []int, d int) (notifications int) { // n
 		cursor := 0
 		left := -1
 
-		for j = 0; j < maxExpenditure; j++ {
+		for j = range maxExpenditure {
 			cursor += histogram[j]
-			if d%2 == 1 { // nolint: nestif
+			if d%2 == 1 { //nolint: nestif
 				// Odd -> Pick middle one for median
 				if cursor >= d/2+1 {
 					doubleMedian = 2 * j
+
 					break
 				}
 			} else {
@@ -39,11 +41,13 @@ func activityNotifications(expenditures []int, d int) (notifications int) { // n
 				if cursor > d/2 && left != -1 {
 					right := j
 					doubleMedian = left + right
+
 					break
 				}
 
 				if cursor > d/2 && left == -1 {
 					doubleMedian = 2 * j
+
 					break
 				}
 			}
@@ -57,6 +61,7 @@ func activityNotifications(expenditures []int, d int) (notifications int) { // n
 		histogram[expenditures[i-d]]--
 		histogram[expenditures[i]]++
 	}
+
 	return notifications
 }
 
@@ -89,7 +94,9 @@ func main() {
 
 	result := activityNotifications(expenditures, d)
 	fmt.Fprint(writer, result)
-	writer.Flush()
+
+	err = writer.Flush()
+	checkError(err)
 }
 
 func checkError(err error) {

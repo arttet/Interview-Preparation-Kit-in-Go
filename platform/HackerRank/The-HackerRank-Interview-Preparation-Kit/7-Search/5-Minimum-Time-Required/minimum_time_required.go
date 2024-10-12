@@ -54,10 +54,11 @@ func main() {
 	var n int
 	var goal int64
 
-	_, _ = fmt.Fscan(reader, &n, &goal)
+	_, err = fmt.Fscan(reader, &n, &goal)
+	checkError(err)
 
 	machines := make([]int64, n)
-	for i := 0; i < n; i++ {
+	for i := range n {
 		_, err = fmt.Fscan(reader, &machines[i])
 		checkError(err)
 	}
@@ -65,7 +66,8 @@ func main() {
 	answer := minimumTime(machines, goal)
 	fmt.Fprint(writer, answer)
 
-	writer.Flush()
+	err = writer.Flush()
+	checkError(err)
 }
 
 func checkError(err error) {

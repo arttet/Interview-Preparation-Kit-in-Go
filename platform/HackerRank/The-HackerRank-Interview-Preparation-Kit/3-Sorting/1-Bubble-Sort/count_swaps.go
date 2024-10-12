@@ -7,12 +7,11 @@ import (
 )
 
 func countSwaps(arr []int) ([]int, int) {
-	var i, j int
 	n := len(arr)
 
 	var numSwaps int
-	for i = 0; i < n; i++ {
-		for j = 0; j < n-1; j++ {
+	for range n {
+		for j := range n - 1 {
 			if arr[j] > arr[j+1] {
 				arr[j], arr[j+1] = arr[j+1], arr[j]
 				numSwaps++
@@ -44,7 +43,7 @@ func main() {
 	checkError(err)
 
 	arr := make([]int, n)
-	for i := 0; i < n; i++ {
+	for i := range n {
 		_, err = fmt.Fscan(reader, &arr[i])
 		checkError(err)
 	}
@@ -55,7 +54,8 @@ func main() {
 	_, _ = fmt.Fprintf(writer, "First Element: %d\n", arr[0])
 	_, _ = fmt.Fprintf(writer, "Last Element: %d\n", arr[n-1])
 
-	writer.Flush()
+	err = writer.Flush()
+	checkError(err)
 }
 
 func checkError(err error) {

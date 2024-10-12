@@ -47,17 +47,19 @@ func main() {
 	checkError(err)
 
 	arr := make([]int, n)
-	for i := 0; i < n; i++ {
+	for i := range n {
 		_, err = fmt.Fscan(reader, &arr[i])
 		checkError(err)
 	}
 
-	result := countingSort(arr, 11)
+	const maxValue = 11
+	result := countingSort(arr, maxValue)
 	for _, counter := range result {
 		fmt.Fprintf(writer, "%d ", counter)
 	}
 
-	writer.Flush()
+	err = writer.Flush()
+	checkError(err)
 }
 
 func checkError(err error) {

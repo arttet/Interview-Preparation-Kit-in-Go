@@ -58,7 +58,8 @@ func main() {
 		fmt.Fprintln(writer, result)
 	}
 
-	writer.Flush()
+	err = writer.Flush()
+	checkError(err)
 }
 
 func checkError(err error) {

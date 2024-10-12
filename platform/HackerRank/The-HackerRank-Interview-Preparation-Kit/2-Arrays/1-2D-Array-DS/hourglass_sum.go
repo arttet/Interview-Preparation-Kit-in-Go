@@ -3,17 +3,17 @@ package main
 import (
 	"bufio"
 	"fmt"
+	"math"
 	"os"
 )
 
 func hourglassSum(arr [][]int) int {
-	maximumSum := -2147483648
+	maximumSum := math.MinInt32
 
 	m, n := len(arr), len(arr[0])
-	for i := 0; i < m-2; i++ {
-		for j := 0; j < n-2; j++ {
-			var sum int
-			sum += arr[i][j] + arr[i][j+1] + arr[i][j+2]
+	for i := range m - 2 {
+		for j := range n - 2 {
+			sum := arr[i][j] + arr[i][j+1] + arr[i][j+2]
 			sum += arr[i+1][j+1]
 			sum += arr[i+2][j] + arr[i+2][j+1] + arr[i+2][j+2]
 
@@ -42,10 +42,12 @@ func main() {
 	reader := bufio.NewReaderSize(stdin, 1024*1024)
 	writer := bufio.NewWriterSize(stdout, 1024*1024)
 
-	arr := make([][]int, 6)
-	for i := 0; i < 6; i++ {
-		arr[i] = make([]int, 6)
-		for j := 0; j < 6; j++ {
+	const size = 6
+
+	arr := make([][]int, size)
+	for i := range size {
+		arr[i] = make([]int, size)
+		for j := range size {
 			_, err = fmt.Fscan(reader, &arr[i][j])
 			checkError(err)
 		}
@@ -53,7 +55,9 @@ func main() {
 
 	result := hourglassSum(arr)
 	fmt.Fprint(writer, result)
-	writer.Flush()
+
+	err = writer.Flush()
+	checkError(err)
 }
 
 func checkError(err error) {

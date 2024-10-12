@@ -10,14 +10,14 @@ func countingValleys(_ int, s string) int {
 	var valleys int
 	var currentLevel int
 
-	for _, ch := range s {
-		if ch == 'U' {
+	for _, chart := range s {
+		if chart == 'U' {
 			currentLevel++
 		} else {
 			currentLevel--
 		}
 
-		if currentLevel == 0 && ch == 'U' {
+		if currentLevel == 0 && chart == 'U' {
 			valleys++
 		}
 	}
@@ -52,7 +52,9 @@ func main() {
 
 	result := countingValleys(n, str)
 	fmt.Fprintln(writer, result)
-	writer.Flush()
+
+	err = writer.Flush()
+	checkError(err)
 }
 
 func checkError(err error) {

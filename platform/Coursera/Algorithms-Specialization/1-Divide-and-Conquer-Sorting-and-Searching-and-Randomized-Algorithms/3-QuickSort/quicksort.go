@@ -7,45 +7,45 @@ import (
 	"strconv"
 )
 
-type pivotID int
+type pivotIDType int
 
 const (
-	firstPivot pivotID = iota
+	firstPivot pivotIDType = iota
 	lastPivot
 	medianOfThreePivot
 )
 
-func countComparisons(arr []int, id pivotID) int64 {
-	return quickSort(arr, 0, len(arr)-1, id)
+func countComparisons(arr []int, pivotID pivotIDType) int64 {
+	return quickSort(arr, 0, len(arr)-1, pivotID)
 }
 
-func quickSort(arr []int, left int, right int, id pivotID) int64 {
+func quickSort(arr []int, left, right int, pivotID pivotIDType) int64 {
 	if left >= right {
 		return 0
 	}
 
-	choosePivot(arr, left, right, id)
+	choosePivot(arr, left, right, pivotID)
 	p := partition(arr, left, right)
 
 	count := int64(right - left)
-	count += quickSort(arr, left, p-1, id)
-	count += quickSort(arr, p+1, right, id)
+	count += quickSort(arr, left, p-1, pivotID)
+	count += quickSort(arr, p+1, right, pivotID)
 
 	return count
 }
 
-func choosePivot(arr []int, left int, right int, id pivotID) {
-	switch id {
+func choosePivot(arr []int, left, right int, pivotID pivotIDType) {
+	switch pivotID {
 	case firstPivot:
 	case lastPivot:
 		arr[left], arr[right] = arr[right], arr[left]
 	case medianOfThreePivot:
-		pivotIndex := max(arr, min(arr, left, right), min(arr, max(arr, left, right), (left+right)/2))
+		pivotIndex := arrayMax(arr, arrayMin(arr, left, right), arrayMin(arr, arrayMax(arr, left, right), (left+right)/2))
 		arr[left], arr[pivotIndex] = arr[pivotIndex], arr[left]
 	}
 }
 
-func partition(arr []int, left int, right int) int {
+func partition(arr []int, left, right int) int {
 	pivot := arr[left]
 
 	i := left
@@ -57,20 +57,23 @@ func partition(arr []int, left int, right int) int {
 	}
 
 	arr[i], arr[left] = arr[left], arr[i]
+
 	return i
 }
 
-func max(arr []int, left int, right int) int {
+func arrayMax(arr []int, left, right int) int {
 	if arr[left] > arr[right] {
 		return left
 	}
+
 	return right
 }
 
-func min(arr []int, left int, right int) int {
+func arrayMin(arr []int, left, right int) int {
 	if arr[left] < arr[right] {
 		return left
 	}
+
 	return right
 }
 
@@ -90,14 +93,16 @@ func main() {
 	reader := bufio.NewScanner(stdin)
 	writer := bufio.NewWriterSize(stdout, 1024*1024)
 
-	arr := make([]int, 0, 64)
+	const initialCapacity = 64
+	arr := make([]int, 0, initialCapacity)
 	for reader.Scan() {
-		value, err := strconv.Atoi(reader.Text())
+		var value int
+		value, err = strconv.Atoi(reader.Text())
 		checkError(err)
 		arr = append(arr, value)
 	}
 
-	pivots := []pivotID{firstPivot, lastPivot, medianOfThreePivot}
+	pivots := []pivotIDType{firstPivot, lastPivot, medianOfThreePivot}
 	for _, pivot := range pivots {
 		array := make([]int, len(arr))
 		copy(array, arr)
@@ -106,7 +111,8 @@ func main() {
 		fmt.Fprintln(writer, result)
 	}
 
-	writer.Flush()
+	err = writer.Flush()
+	checkError(err)
 }
 
 func checkError(err error) {

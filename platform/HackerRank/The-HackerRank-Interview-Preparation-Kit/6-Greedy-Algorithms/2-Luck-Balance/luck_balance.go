@@ -14,7 +14,7 @@ func luckBalance(k int, contests [][]int) int {
 	})
 
 	var result int
-	for i := 0; i < len(contests); i++ {
+	for i := range contests {
 		if i < k || contests[i][T] == 0 {
 			result += contests[i][L]
 		} else {
@@ -46,7 +46,7 @@ func main() {
 	checkError(err)
 
 	contests := make([][]int, n)
-	for i := 0; i < n; i++ {
+	for i := range n {
 		contests[i] = make([]int, 2)
 		_, err = fmt.Fscan(reader, &contests[i][0], &contests[i][1])
 		checkError(err)
@@ -54,7 +54,9 @@ func main() {
 
 	result := luckBalance(k, contests)
 	fmt.Fprint(writer, result)
-	writer.Flush()
+
+	err = writer.Flush()
+	checkError(err)
 }
 
 func checkError(err error) {

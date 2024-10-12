@@ -4,6 +4,8 @@
 
 BIN_DIR ?= bin/
 
+LOCAL_PKG ?= github.com/arttet/Interview-Preparation-Kit-in-Go
+
 ################################################################################
 
 # Note: use Makefile.local for customization
@@ -15,13 +17,22 @@ BIN_DIR ?= bin/
 help:			## Display the help message
 	@fgrep -h "## " $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/## //'
 
+.PHONY: req
+req:			## Install requirements
+	go install github.com/securego/gosec/v2/cmd/gosec@latest
+	go install mvdan.cc/gofumpt@latest
+
 .PHONY: fmt
 fmt:			## Format the codebase
-	goimports -w -local github.com/arttet/Interview-Preparation-Kit-in-Go ${CURDIR}
+	goimports -w -local ${LOCAL_PKG} ${CURDIR}
 
 .PHONY: lint
-lint:			##  Run code linters to check for style and errors
-	golangci-lint run ./...
+lint:			## Run static code analyzers
+	golangci-lint run --fix ./...
+
+.PHONY: audit
+audit:			## Run security scanners
+	gosec -confidence low -enable-audit -tests -track-suppressions -no-fail -fmt sarif -sort -out results.sarif -stdout -verbose=text ./...
 
 .PHONY: build
 build:			## Compile the packages
@@ -30,12 +41,12 @@ build:			## Compile the packages
 .PHONY: test
 test:			## Run unit tests
 	go test -coverprofile coverage.out ./...
-	go tool cover -func coverage.out | grep -E '100.0%|total' || echo "OK"
-	go tool cover -func coverage.out | grep total | awk '{print ($$3)}'
+	@go tool cover -func coverage.out | grep -E '100.0%|total' || echo "OK"
+	@go tool cover -func coverage.out | grep total | awk '{print ($$3)}'
 
 .PHONY: bench
 bench:			## Execute benchmarks
-	go test -run Bench -bench=. ./... | tee bench_output.out
+	go test ./... -run Bench -bench=. | tee bench_output.out
 	awk '/Benchmark/{count ++; printf("%d,%s,%s,%s\n",count,$$1,$$2,$$3)}' bench_output.out > result.out
 
 .PHONY: pprof
@@ -50,10 +61,12 @@ coverage:		## Generate an HTML report for code coverage
 	go tool cover -html coverage.out
 
 .PHONY: validate
-validate:		## Validate the CodeCov YAML
+validate:		## Validate configurations
+	golangci-lint config verify --verbose
 	cat codecov.yml | curl --data-binary @- https://codecov.io/validate
 
 .PHONY: clean
 clean:			## Remove generated build artifacts
 	rm -rf ${BIN_DIR}
-	rm *.out
+	rm --force coverage.out
+	rm --force results.sarif

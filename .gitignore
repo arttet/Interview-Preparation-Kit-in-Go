@@ -9,3 +9,6 @@
 
 # env file
 .env
+
+# gosec
+*.sarif

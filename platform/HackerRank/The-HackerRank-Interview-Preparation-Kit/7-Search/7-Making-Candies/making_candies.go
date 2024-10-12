@@ -8,7 +8,7 @@ import (
 	"os"
 )
 
-func minimumPasses(machines int64, workers int64, price int64, target int64) int64 {
+func minimumPasses(machines, workers, price, target int64) int64 {
 	if new(big.Int).Mul(big.NewInt(machines), big.NewInt(workers)).Cmp(big.NewInt(target)) >= 0 {
 		return 1
 	}
@@ -28,11 +28,7 @@ func minimumPasses(machines int64, workers int64, price int64, target int64) int
 	return left
 }
 
-func check(machines int64, workers int64, price int64, target int64, passes int64) bool {
-	// if machines >= (target+workers-1)/workers {
-	// 	return true
-	// }
-
+func check(machines, workers, price, target, passes int64) bool {
 	candies := machines * workers
 	passes--
 
@@ -79,12 +75,14 @@ func main() {
 	writer := bufio.NewWriterSize(stdout, 1024*1024)
 
 	var m, w, p, n int64
-	_, _ = fmt.Fscan(reader, &m, &w, &p, &n)
+	_, err = fmt.Fscan(reader, &m, &w, &p, &n)
+	checkError(err)
 
 	answer := minimumPasses(m, w, p, n)
 	fmt.Fprint(writer, answer)
 
-	writer.Flush()
+	err = writer.Flush()
+	checkError(err)
 }
 
 func checkError(err error) {

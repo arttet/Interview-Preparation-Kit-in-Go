@@ -25,11 +25,12 @@ func minOperations(n int) []int {
 	result := make([]int, 0, n)
 	for i := n; i >= 1; {
 		result = append(result, i)
-		if dp[i-1] == dp[i]-1 { // nolint: gocritic
+		switch {
+		case dp[i-1] == dp[i]-1:
 			i--
-		} else if i%2 == 0 && dp[i/2] == dp[i]-1 {
+		case i%2 == 0 && dp[i/2] == dp[i]-1:
 			i /= 2
-		} else if i%3 == 0 && dp[i/3] == dp[i]-1 {
+		case i%3 == 0 && dp[i/3] == dp[i]-1:
 			i /= 3
 		}
 	}
@@ -39,13 +40,6 @@ func minOperations(n int) []int {
 	}
 
 	return result
-}
-
-func min(lhs, rhs int) int {
-	if lhs < rhs {
-		return lhs
-	}
-	return rhs
 }
 
 func main() {
@@ -74,7 +68,8 @@ func main() {
 		fmt.Fprintf(writer, "%d ", result[i])
 	}
 
-	writer.Flush()
+	err = writer.Flush()
+	checkError(err)
 }
 
 func checkError(err error) {
