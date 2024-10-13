@@ -4,6 +4,7 @@
 [![GitHub CI](https://github.com/arttet/Interview-Preparation-Kit-in-Go/actions/workflows/github-ci.yml/badge.svg?branch=main)](https://github.com/arttet/Interview-Preparation-Kit-in-Go/actions/workflows/github-ci.yml)
 [![codecov](https://codecov.io/gh/arttet/Interview-Preparation-Kit-in-Go/branch/main/graph/badge.svg?token=EZQHXFHO0S)](https://codecov.io/gh/arttet/Interview-Preparation-Kit-in-Go)
 [![GitHub](https://img.shields.io/github/license/arttet/Interview-Preparation-Kit-in-Go)](https://github.com/arttet/Interview-Preparation-Kit-in-Go/blob/main/LICENSE)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Farttet%2FInterview-Preparation-Kit-in-Go.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Farttet%2FInterview-Preparation-Kit-in-Go?ref=badge_shield)
 
 ## Usage
 
@@ -23,3 +24,7 @@ coverage:               Generate an HTML report for code coverage
 validate:               Validate configurations
 clean:                  Remove generated build artifacts
 ```
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Farttet%2FInterview-Preparation-Kit-in-Go.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Farttet%2FInterview-Preparation-Kit-in-Go?ref=badge_large)
