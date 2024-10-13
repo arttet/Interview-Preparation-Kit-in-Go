@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from functools import cmp_to_key, total_ordering
+from functools import cmp_to_key
 from dataclasses import dataclass
 
 
@@ -14,6 +14,7 @@ class Player:
             return True
         return self.score == other.score and self.name > other.name
 
+    @staticmethod
     def comparator(lhs, rhs):
         return (lhs < rhs) - (lhs > rhs)
 

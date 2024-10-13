@@ -26,9 +26,14 @@ jobs:
         run: |
           go install golang.org/x/tools/cmd/goimports@latest
 
-      - name: Check format
+      - name: Check Go format
         run: |
-          goimports -l $(pwd)
+          goimports -e -l $(pwd)
+
+      - name: Check Markdown format
+        uses: DavidAnson/markdownlint-cli2-action@v17
+        with:
+          globs: '**/*.md'
 
   audit:
     runs-on: ubuntu-latest
@@ -124,3 +129,8 @@ jobs:
         with:
           name: code-coverage-report
           path: coverage.html
+
+      - name: Trigger Go Report Card Refresh
+        if: github.ref == 'refs/heads/main'
+        run: |
+          curl -X POST https://goreportcard.com/report/github.com/${{ github.repository }}

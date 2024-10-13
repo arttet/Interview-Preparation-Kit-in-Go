@@ -20,11 +20,11 @@ help:			## Display the help message
 .PHONY: req
 req:			## Install requirements
 	go install github.com/securego/gosec/v2/cmd/gosec@latest
-	go install mvdan.cc/gofumpt@latest
 
 .PHONY: fmt
 fmt:			## Format the codebase
-	goimports -w -local ${LOCAL_PKG} ${CURDIR}
+	@goimports -e -w -local ${LOCAL_PKG} ${CURDIR}
+	@docker run --rm -v $(shell pwd):/workdir -t davidanson/markdownlint-cli2 '/workdir/**/*.md' --fix
 
 .PHONY: lint
 lint:			## Run static code analyzers
