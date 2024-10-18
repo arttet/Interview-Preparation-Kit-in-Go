@@ -9,6 +9,7 @@ LOCAL_PKG ?= github.com/arttet/Interview-Preparation-Kit-in-Go
 ################################################################################
 
 # Note: use Makefile.local for customization
+-include misc/make/doc.Makefile
 -include Makefile.local
 
 ## ▸▸▸ Development commands ◂◂◂
