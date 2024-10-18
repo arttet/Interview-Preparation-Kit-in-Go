@@ -106,8 +106,8 @@ jobs:
       - name: Generate the tests and code coverage reports
         run: |
           go env -w CGO_ENABLED=0
-          go test ./... -v -coverprofile coverage.out
-          go test ./... -v | go-junit-report > report.xml
+          go test -v -coverpkg=./... -coverprofile=coverage.out ./...
+          go test -v ./... | go-junit-report > report.xml
           go tool cover -html coverage.out -o coverage.html
           gcov2lcov -infile=coverage.out -outfile=coverage.lcov
 
@@ -131,6 +131,16 @@ jobs:
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
           coverage-reports: ./coverage.lcov
+
+      - name: Upload the code coverage report to Code Climate
+        if: github.ref == 'refs/heads/main'
+        uses: paambaati/codeclimate-action@v9.0.0
+        env:
+          CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
+        with:
+          coverageCommand: echo Code Climate
+          coverageLocations: |
+            ${{github.workspace}}/*.lcov:lcov
 
       - name: Upload the code coverage report to GitHub
         uses: actions/upload-artifact@v4
