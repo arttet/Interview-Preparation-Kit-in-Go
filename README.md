@@ -28,6 +28,10 @@ pprof:                  Run performance profiling with pprof
 coverage:               Generate an HTML report for code coverage
 validate:               Validate configurations
 clean:                  Remove generated build artifacts
+▸▸▸ Documentation commands ◂◂◂
+doc-build:              Build the documentation site [env: DOC_DIR=]
+doc-serve:              Serve the documentation site [env: DOC_PORT=]
+doc-clean:              Remove generated artifacts [env: DOC_DIR=]
 ```
 
 ## License

@@ -31,7 +31,7 @@ jobs:
           goimports -e -l $(pwd)
 
       - name: Check Markdown format
-        uses: DavidAnson/markdownlint-cli2-action@v17
+        uses: DavidAnson/markdownlint-cli2-action@v17.0.0
         with:
           globs: '**/*.md'
 
@@ -83,7 +83,7 @@ jobs:
       - name: Test
         run: |
           go env -w CGO_ENABLED=1
-          go test -v -timeout 30s -race ./...
+          go test -v -timeout 30s -race -shuffle on ./...
 
   coverage:
     runs-on: ubuntu-latest
@@ -101,22 +101,24 @@ jobs:
       - name: Install requirements
         run: |
           go install github.com/jstemmer/go-junit-report@latest
+          go install github.com/jandelgado/gcov2lcov@latest
 
-      - name: Generate code coverage
+      - name: Generate the tests and code coverage reports
         run: |
           go env -w CGO_ENABLED=0
           go test ./... -v -coverprofile coverage.out
           go test ./... -v | go-junit-report > report.xml
           go tool cover -html coverage.out -o coverage.html
+          gcov2lcov -infile=coverage.out -outfile=coverage.lcov
 
-      - name: Upload the test results to Codecov
+      - name: Upload the test report to Codecov
         if: ${{ !cancelled() }}
         uses: codecov/test-results-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./report.xml
 
-      - name: Upload the code coverage results to Codecov
+      - name: Upload the code coverage report to Codecov
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -124,13 +126,19 @@ jobs:
           flags: unittests
           name: codecov-umbrella
 
-      - name: Upload the code coverage results to GitHub
+      - name: Upload the code coverage report to Codacy
+        uses: codacy/codacy-coverage-reporter-action@v1.3.0
+        with:
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          coverage-reports: ./coverage.lcov
+
+      - name: Upload the code coverage report to GitHub
         uses: actions/upload-artifact@v4
         with:
           name: code-coverage-report
           path: coverage.html
 
-      - name: Trigger Go Report Card Refresh
+      - name: Refresh the Go Report card
         if: github.ref == 'refs/heads/main'
         run: |
-          curl -X POST https://goreportcard.com/report/github.com/${{ github.repository }}
+          curl -X POST -F "repo=github.com/${{ github.repository }}" https://goreportcard.com/checks
