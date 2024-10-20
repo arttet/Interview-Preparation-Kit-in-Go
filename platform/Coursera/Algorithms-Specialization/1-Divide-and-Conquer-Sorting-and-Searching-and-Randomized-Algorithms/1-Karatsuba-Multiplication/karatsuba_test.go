@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"math/big"
 	"testing"
@@ -16,8 +15,6 @@ const (
 	rhs      = "2718281828459045235360287471352662497757247093699959574966967627"
 	expected = "8539734222673567065463550869546574495034888535765114961879601127067743044893204848617875072216249073013374895871952806582723184" //nolint: lll
 )
-
-var ErrTestPanicMock = errors.New("mock panic")
 
 func TestOK(t *testing.T) {
 	N := 35
@@ -55,7 +52,8 @@ func BenchmarkMult(b *testing.B) {
 func TestPanic(t *testing.T) {
 	t.Parallel()
 
-	assert.Panics(t, func() { checkError(ErrTestPanicMock) }, "The code did not panic")
+	assert.Panics(t, func() { main() }, "The function did not panic")
+	assert.Panics(t, func() { checkError(utility.ErrTestPanicMock) }, "The function did not panic")
 }
 
 func TestDoCarryPanic(t *testing.T) {
@@ -63,5 +61,5 @@ func TestDoCarryPanic(t *testing.T) {
 
 	x := newInteger("", 1)
 	x[0] = -10
-	assert.Panics(t, func() { x.doCarry() }, "The code did not panic")
+	assert.Panics(t, func() { x.doCarry() }, "The function did not panic")
 }

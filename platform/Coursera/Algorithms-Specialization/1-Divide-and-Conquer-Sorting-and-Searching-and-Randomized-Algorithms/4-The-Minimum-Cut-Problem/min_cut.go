@@ -178,14 +178,16 @@ func main() {
 	stdin, err := os.Open(os.Getenv("INPUT_PATH"))
 	if err != nil {
 		stdin = os.Stdin
+	} else {
+		defer stdin.Close()
 	}
-	defer stdin.Close()
 
 	stdout, err := os.Create(os.Getenv("OUTPUT_PATH"))
 	if err != nil {
 		stdout = os.Stdout
+	} else {
+		defer stdout.Close()
 	}
-	defer stdout.Close()
 
 	reader := bufio.NewScanner(stdin)
 	writer := bufio.NewWriterSize(stdout, 1024*1024)
