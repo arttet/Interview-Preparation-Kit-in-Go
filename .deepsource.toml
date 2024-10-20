@@ -6,3 +6,7 @@ enabled = true
 
   [analyzers.meta]
   import_root = "github.com/arttet/Interview-Preparation-Kit-in-Go"
+
+[[analyzers]]
+name = "test-coverage"
+enabled = true
