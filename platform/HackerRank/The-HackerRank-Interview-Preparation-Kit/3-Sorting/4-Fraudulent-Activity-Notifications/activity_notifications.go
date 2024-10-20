@@ -10,59 +10,70 @@ const maxExpenditure = 201
 
 func activityNotifications(expenditures []int, d int) int {
 	var notifications int
-	var i, j int
+	histogram := buildHistogram(expenditures[:d])
 
-	histogram := make([]int, maxExpenditure)
-	for i = 0; i < d; i++ { //nolint: intrange
-		histogram[expenditures[i]]++
-	}
-
-	for n := len(expenditures); i < n; i++ {
-		doubleMedian := 0
-
-		cursor := 0
-		left := -1
-
-		for j = range maxExpenditure {
-			cursor += histogram[j]
-			if d%2 == 1 { //nolint: nestif
-				// Odd -> Pick middle one for median
-				if cursor >= d/2+1 {
-					doubleMedian = 2 * j
-
-					break
-				}
-			} else {
-				// Even -> Pick average of two middle values for median
-				if cursor == d/2 {
-					left = j
-				}
-
-				if cursor > d/2 && left != -1 {
-					right := j
-					doubleMedian = left + right
-
-					break
-				}
-
-				if cursor > d/2 && left == -1 {
-					doubleMedian = 2 * j
-
-					break
-				}
-			}
-		}
+	for n, i := len(expenditures), d; i < n; i++ {
+		doubleMedian := calculateDoubleMedian(histogram, d)
 
 		if expenditures[i] >= doubleMedian {
 			notifications++
 		}
 
 		// Update histogram: slide window 1 index to right
-		histogram[expenditures[i-d]]--
-		histogram[expenditures[i]]++
+		updateHistogram(histogram, expenditures[i-d], expenditures[i])
 	}
 
 	return notifications
+}
+
+func buildHistogram(expenditures []int) []int {
+	histogram := make([]int, maxExpenditure)
+	for _, exp := range expenditures {
+		histogram[exp]++
+	}
+
+	return histogram
+}
+
+func calculateDoubleMedian(histogram []int, days int) int {
+	var doubleMedian int
+
+	cursor := 0
+	left := -1
+
+	for j := range maxExpenditure {
+		cursor += histogram[j]
+
+		if days%2 == 1 { //nolint: nestif
+			// Odd
+			if cursor >= days/2+1 {
+				doubleMedian = 2 * j
+
+				break
+			}
+		} else {
+			// Even
+			if cursor == days/2 {
+				left = j
+			}
+			if cursor > days/2 {
+				if left != -1 {
+					doubleMedian = left + j
+				} else {
+					doubleMedian = 2 * j
+				}
+
+				break
+			}
+		}
+	}
+
+	return doubleMedian
+}
+
+func updateHistogram(histogram []int, outgoing, incoming int) {
+	histogram[outgoing]--
+	histogram[incoming]++
 }
 
 func main() {

@@ -12,6 +12,31 @@ const (
 	CheckCase
 )
 
+func insertValue(value int, number, frequency map[int]int) {
+	freq := number[value]
+	number[value]++
+	frequency[number[value]]++
+	if freq > 0 {
+		frequency[freq]--
+	}
+}
+
+func deleteValue(value int, number, frequency map[int]int) {
+	if freq, ok := number[value]; ok {
+		number[value]--
+		if number[value] == 0 {
+			delete(number, value)
+		} else {
+			frequency[number[value]]++
+		}
+
+		frequency[freq]--
+		if frequency[freq] == 0 {
+			delete(frequency, freq)
+		}
+	}
+}
+
 func frequencyQueries(queries [][]int) []int {
 	var result []int
 
@@ -21,26 +46,9 @@ func frequencyQueries(queries [][]int) []int {
 	for _, query := range queries {
 		switch action, value := query[0], query[1]; action {
 		case InsertCase:
-			freq := number[value]
-			number[value]++
-			frequency[number[value]]++
-			if freq > 0 {
-				frequency[freq]--
-			}
+			insertValue(value, number, frequency)
 		case DeleteCase:
-			if freq, ok := number[value]; ok {
-				number[value]--
-				if number[value] == 0 {
-					delete(number, value)
-				} else {
-					frequency[number[value]]++
-				}
-
-				frequency[freq]--
-				if frequency[freq] == 0 {
-					delete(frequency, freq)
-				}
-			}
+			deleteValue(value, number, frequency)
 		case CheckCase:
 			item := 0
 			if freq, ok := frequency[value]; ok && freq > 0 {
