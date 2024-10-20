@@ -51,15 +51,11 @@ func merge(arr, temp []int, left, middle, right int) int64 {
 
 func main() {
 	stdin, err := os.Open(os.Getenv("INPUT_PATH"))
-	if err != nil {
-		stdin = os.Stdin
-	}
+	checkError(err)
 	defer stdin.Close()
 
 	stdout, err := os.Create(os.Getenv("OUTPUT_PATH"))
-	if err != nil {
-		stdout = os.Stdout
-	}
+	checkError(err)
 	defer stdout.Close()
 
 	reader := bufio.NewScanner(stdin)
@@ -73,6 +69,9 @@ func main() {
 		checkError(err)
 		arr = append(arr, value)
 	}
+
+	err = reader.Err()
+	checkError(err)
 
 	result := countInversions(arr)
 	fmt.Fprint(writer, result)

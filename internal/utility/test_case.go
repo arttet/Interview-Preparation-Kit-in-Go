@@ -1,6 +1,7 @@
 package utility
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -15,6 +16,8 @@ const (
 	InputPathEnv  = "INPUT_PATH"
 	OutputPathEnv = "OUTPUT_PATH"
 )
+
+var ErrTestPanicMock = errors.New("mock panic")
 
 type TestCase struct {
 	In  string
@@ -32,7 +35,7 @@ func (test *TestCase) RunTest(t *testing.T, run func()) {
 	t.Setenv(InputPathEnv, test.In)
 
 	dir, err := os.MkdirTemp("", "test_*_dir")
-	checkError(err)
+	CheckError(err)
 	defer os.RemoveAll(dir)
 
 	fileName := fmt.Sprintf("output.%d.txt", time.Now().UnixNano())
@@ -42,7 +45,7 @@ func (test *TestCase) RunTest(t *testing.T, run func()) {
 	run()
 
 	inputContent, err := os.ReadFile(test.In)
-	checkError(err)
+	CheckError(err)
 	test.Input = strings.TrimSpace(string(inputContent))
 	ast.NotEmpty(test.Input)
 
@@ -52,13 +55,13 @@ func (test *TestCase) RunTest(t *testing.T, run func()) {
 	}
 
 	contentOutput, err := os.ReadFile(tempFileName) // #nosec G304
-	checkError(err)
+	CheckError(err)
 	test.Output = strings.TrimSpace(string(contentOutput))
 
 	ast.Equal(test.Expected, test.Output, "Test Case: %v %v", test.In, test.Out)
 }
 
-func checkError(err error) {
+func CheckError(err error) {
 	if err != nil {
 		panic(err)
 	}
