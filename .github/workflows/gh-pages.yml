@@ -24,7 +24,7 @@ jobs:
       DOC_DIR: docs
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Setup Pages
