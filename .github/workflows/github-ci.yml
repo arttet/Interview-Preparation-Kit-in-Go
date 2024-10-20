@@ -116,13 +116,13 @@ jobs:
         uses: codecov/test-results-action@v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./report.xml
+          files: report.xml
 
       - name: Upload the code coverage report to Codecov
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          files: ./coverage.out
+          files: coverage.out
           flags: unittests
           name: codecov-umbrella
 
@@ -141,6 +141,13 @@ jobs:
           coverageCommand: echo Code Climate
           coverageLocations: |
             ${{github.workspace}}/*.lcov:lcov
+
+      - name: Upload the code coverage report to DeepSource
+        uses: deepsourcelabs/test-coverage-action@master
+        with:
+          key: go
+          coverage-file: coverage.out
+          dsn: ${{ secrets.DEEPSOURCE_DSN }}
 
       - name: Upload the code coverage report to GitHub
         uses: actions/upload-artifact@v4
