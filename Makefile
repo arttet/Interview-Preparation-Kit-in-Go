@@ -25,7 +25,7 @@ req:			## Install requirements
 .PHONY: fmt
 fmt:			## Format the codebase
 	@goimports -e -w -local ${LOCAL_PKG} ${CURDIR}
-	@docker run --rm -v $(shell pwd):/workdir -t davidanson/markdownlint-cli2 '/workdir/**/*.md' --fix
+	@docker run --rm -v $(shell pwd):/workdir -t davidanson/markdownlint-cli2 '/workdir/**/*.md' '#/workdir/docs/themes/adidoks/**/*.md' --fix
 
 .PHONY: lint
 lint:			## Run static code analyzers
