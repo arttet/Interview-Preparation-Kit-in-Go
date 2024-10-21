@@ -11,9 +11,9 @@
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Farttet%2FInterview-Preparation-Kit-in-Go.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Farttet%2FInterview-Preparation-Kit-in-Go?ref=badge_shield)
 [![GitHub License](https://img.shields.io/github/license/arttet/Interview-Preparation-Kit-in-Go)](LICENSE)
 
-The **Interview Preparation Kit in Go** consists of curated course modules I've
-completed across various learning platforms, aiming to assist developers in
-mastering algorithms and problem-solving techniques for technical interviews.
+The **Interview Preparation Kit in Go** is a collection of algorithm challenges
+and solutions from various courses, designed to assist developers prepare for
+technical interviews by mastering algorithms and problem-solving techniques.
 
 ## Usage
 

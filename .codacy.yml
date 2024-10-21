@@ -1,0 +1,10 @@
+engines:
+  go:
+    enabled: true
+tools:
+  golangci-lint:
+    enabled: true
+    configurations:
+      config: '.golangci.yml'
+exclude_paths:
+  - 'docs/themes/**/*'

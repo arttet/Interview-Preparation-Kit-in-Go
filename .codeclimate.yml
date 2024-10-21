@@ -22,3 +22,4 @@ exclude_paths:
   - '**/*_test.go'
   - '*_test.go'
   - 'vendor/'
+  - 'docs/themes/adidoks/'
