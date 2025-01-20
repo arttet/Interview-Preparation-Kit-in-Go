@@ -31,7 +31,7 @@ jobs:
           goimports -e -l $(pwd)
 
       - name: Check Markdown format
-        uses: DavidAnson/markdownlint-cli2-action@v18.0.0
+        uses: DavidAnson/markdownlint-cli2-action@v19.1.0
         with:
           globs: |
             **/*.md
