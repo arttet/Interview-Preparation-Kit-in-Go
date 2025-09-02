@@ -39,7 +39,7 @@ jobs:
         run: zola --root ${{ env.DOC_DIR }} build
 
       - name: Upload artifacts
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: ./${{ env.DOC_DIR }}/public
 
