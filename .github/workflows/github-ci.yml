@@ -78,7 +78,7 @@ jobs:
           go build -o bin/ ./...
 
       - name: Run golangci-lint
-        uses: golangci/golangci-lint-action@v6
+        uses: golangci/golangci-lint-action@v8
         with:
           version: v1.61
 
