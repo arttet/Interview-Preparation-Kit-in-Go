@@ -139,16 +139,6 @@ jobs:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
           coverage-reports: ./coverage.lcov
 
-      - name: Upload the code coverage report to Code Climate
-        if: github.ref == 'refs/heads/main'
-        uses: paambaati/codeclimate-action@v9.0.0
-        env:
-          CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID}}
-        with:
-          coverageCommand: echo Code Climate
-          coverageLocations: |
-            ${{github.workspace}}/*.lcov:lcov
-
       - name: Upload the code coverage report to DeepSource
         uses: deepsourcelabs/test-coverage-action@master
         with:
