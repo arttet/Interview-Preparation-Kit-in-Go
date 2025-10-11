@@ -23,7 +23,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v6
         with:
-          go-version: ${{ matrix.go-version }}
+          go-version: stable
 
       - name: Install requirements
         run: |
@@ -31,7 +31,11 @@ jobs:
 
       - name: Check Go format
         run: |
-          goimports -e -l $(pwd)
+          if [ -n "$(goimports -l .)" ]; then
+            echo "Go files are not formatted correctly by goimports. Please run 'goimports -w .' to fix."
+            goimports -d . # Show the diff for better understanding
+            exit 1
+          fi
 
       - name: Check YAML format
         uses: docker://ghcr.io/google/yamlfmt:latest
@@ -39,11 +43,11 @@ jobs:
           args: -lint .
 
       - name: Check Markdown format
-        uses: DavidAnson/markdownlint-cli2-action@v20
+        uses: DavidAnson/markdownlint-cli2-action@992badcdf24e3b8eb7e87ff9287fe931bcb00c6e # v20
         with:
           globs: |
             **/*.md
-            #docs/themes/adidoks/**/*.md
+            !docs/themes/adidoks/**/*.md
 
   audit:
     runs-on: ubuntu-latest
@@ -62,7 +66,7 @@ jobs:
           comment-summary-in-pr: always
 
       - name: Run Security Scanner
-        uses: securego/gosec@master
+        uses: securego/gosec@f6760311e8a3db06e3d2d7e9817874dadcd34a25 # master
         with:
           args: -confidence low -enable-audit -tests -track-suppressions -no-fail -fmt sarif -sort -out results.sarif -stdout -verbose=text ./...
 
@@ -72,7 +76,7 @@ jobs:
           sarif_file: results.sarif
 
   analyze:
-    name: Analyze (${{ matrix.language }})
+    name: analyze (${{ matrix.language }})
     runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
     permissions:
       security-events: write
@@ -126,7 +130,7 @@ jobs:
           go build -o bin/ ./...
 
       - name: Run golangci-lint
-        uses: golangci/golangci-lint-action@v8
+        uses: golangci/golangci-lint-action@4afd733a84b1f43292c63897423277bb7f4313a9 # v8
         with:
           version: latest
 
@@ -138,6 +142,9 @@ jobs:
   coverage:
     needs: build
     runs-on: ubuntu-latest
+
+    env:
+      CGO_ENABLED: 0
 
     steps:
       - name: Checkout repository
@@ -155,21 +162,20 @@ jobs:
 
       - name: Generate the tests and code coverage reports
         run: |
-          go env -w CGO_ENABLED=0
-          go test -v -coverpkg=./... -coverprofile=coverage.out ./...
-          go test -v ./... | go-junit-report > report.xml
+          go test -v -coverpkg=./... -coverprofile=coverage.out -json ./... | tee test.json
+          cat test.json | go-junit-report > report.xml
           go tool cover -html coverage.out -o coverage.html
           gcov2lcov -infile=coverage.out -outfile=coverage.lcov
 
       - name: Upload the test report to Codecov
         if: ${{ !cancelled() }}
-        uses: codecov/test-results-action@v1
+        uses: codecov/test-results-action@47f89e9acb64b76debcd5ea40642d25a4adced9f # v1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: report.xml
 
       - name: Upload the code coverage report to Codecov
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@5a1091511ad55cbe89839c7260b706298ca349f7 # v5
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: coverage.out
@@ -177,13 +183,13 @@ jobs:
           name: codecov-umbrella
 
       - name: Upload the code coverage report to Codacy
-        uses: codacy/codacy-coverage-reporter-action@v1.3.0
+        uses: codacy/codacy-coverage-reporter-action@89d6c85cfafaec52c72b6c5e8b2878d33104c699 # v1.3.0
         with:
           project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
           coverage-reports: ./coverage.lcov
 
       - name: Upload the code coverage report to DeepSource
-        uses: deepsourcelabs/test-coverage-action@master
+        uses: deepsourcelabs/test-coverage-action@4284bb73a04adb39faaa6bfcc2d0e3dd137ffed7 # v1
         with:
           key: go
           coverage-file: coverage.out
