@@ -58,14 +58,14 @@ func main() {
 	if err != nil {
 		stdin = os.Stdin
 	} else {
-		defer stdin.Close()
+		defer func() { err = stdin.Close(); checkError(err) }()
 	}
 
 	stdout, err := os.Create(os.Getenv("OUTPUT_PATH"))
 	if err != nil {
 		stdout = os.Stdout
 	} else {
-		defer stdout.Close()
+		defer func() { err = stdout.Close(); checkError(err) }()
 	}
 
 	reader := bufio.NewReaderSize(stdin, 1024*1024)
@@ -74,7 +74,8 @@ func main() {
 	s := readLine(reader)
 	result := isBalanced(s)
 
-	fmt.Fprintf(writer, "%s\n", result)
+	_, err = fmt.Fprintf(writer, "%s\n", result)
+	checkError(err)
 
 	err = writer.Flush()
 	checkError(err)

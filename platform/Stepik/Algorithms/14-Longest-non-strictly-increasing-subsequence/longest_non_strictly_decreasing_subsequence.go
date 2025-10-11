@@ -33,7 +33,9 @@ func longestNonStrictlyDecreasingSubsequence(arr []int) []int {
 		if num >= dp[j] {
 			dp[j] = num
 			position[j] = i
+
 			previous[i] = position[j-1]
+
 			if j > length {
 				length = j
 			}
@@ -54,20 +56,21 @@ func main() {
 	if err != nil {
 		stdin = os.Stdin
 	} else {
-		defer stdin.Close()
+		defer func() { err = stdin.Close(); checkError(err) }()
 	}
 
 	stdout, err := os.Create(os.Getenv("OUTPUT_PATH"))
 	if err != nil {
 		stdout = os.Stdout
 	} else {
-		defer stdout.Close()
+		defer func() { err = stdout.Close(); checkError(err) }()
 	}
 
 	reader := bufio.NewReaderSize(stdin, 1024*1024)
 	writer := bufio.NewWriterSize(stdout, 1024*1024)
 
 	var n int
+
 	_, err = fmt.Fscanln(reader, &n)
 	checkError(err)
 
@@ -78,9 +81,12 @@ func main() {
 	}
 
 	result := longestNonStrictlyDecreasingSubsequence(arr)
-	fmt.Fprintln(writer, len(result))
+	_, err = fmt.Fprintln(writer, len(result))
+	checkError(err)
+
 	for i := range result {
-		fmt.Fprintf(writer, "%d ", result[i])
+		_, err = fmt.Fprintf(writer, "%d ", result[i])
+		checkError(err)
 	}
 
 	err = writer.Flush()

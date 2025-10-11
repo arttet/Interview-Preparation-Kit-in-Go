@@ -12,8 +12,10 @@ func lengthOfLDS(arr []int) int {
 	dp[0] = 1
 
 	result := 1
+
 	for i := 1; i < n; i++ {
 		dp[i] = 1
+
 		for j := range i {
 			if arr[j] <= arr[i] && arr[i]%arr[j] == 0 {
 				dp[i] = max(dp[i], dp[j]+1)
@@ -31,20 +33,21 @@ func main() {
 	if err != nil {
 		stdin = os.Stdin
 	} else {
-		defer stdin.Close()
+		defer func() { err = stdin.Close(); checkError(err) }()
 	}
 
 	stdout, err := os.Create(os.Getenv("OUTPUT_PATH"))
 	if err != nil {
 		stdout = os.Stdout
 	} else {
-		defer stdout.Close()
+		defer func() { err = stdout.Close(); checkError(err) }()
 	}
 
 	reader := bufio.NewReaderSize(stdin, 1024*1024)
 	writer := bufio.NewWriterSize(stdout, 1024*1024)
 
 	var n int
+
 	_, err = fmt.Fscanln(reader, &n)
 	checkError(err)
 
@@ -55,7 +58,8 @@ func main() {
 	}
 
 	result := lengthOfLDS(arr)
-	fmt.Fprint(writer, result)
+	_, err = fmt.Fprint(writer, result)
+	checkError(err)
 
 	err = writer.Flush()
 	checkError(err)

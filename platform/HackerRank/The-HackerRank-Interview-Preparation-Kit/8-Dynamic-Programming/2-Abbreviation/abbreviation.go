@@ -31,7 +31,8 @@ func abbreviation(a, b string) string {
 			}
 
 			if unicode.IsLower(runeA[j-1]) {
-				current[j] = previous[j-1] && runeB[i-1] == unicode.ToUpper(runeA[j-1]) || current[j-1]
+				current[j] = previous[j-1] && runeB[i-1] == unicode.ToUpper(runeA[j-1]) ||
+					current[j-1]
 			} else {
 				current[j] = previous[j-1] && runeB[i-1] == runeA[j-1]
 			}
@@ -52,20 +53,21 @@ func main() {
 	if err != nil {
 		stdin = os.Stdin
 	} else {
-		defer stdin.Close()
+		defer func() { err = stdin.Close(); checkError(err) }()
 	}
 
 	stdout, err := os.Create(os.Getenv("OUTPUT_PATH"))
 	if err != nil {
 		stdout = os.Stdout
 	} else {
-		defer stdout.Close()
+		defer func() { err = stdout.Close(); checkError(err) }()
 	}
 
 	reader := bufio.NewReaderSize(stdin, 1024*1024)
 	writer := bufio.NewWriterSize(stdout, 1024*1024)
 
 	var q int
+
 	_, err = fmt.Fscanln(reader, &q)
 	checkError(err)
 
@@ -77,7 +79,8 @@ func main() {
 		checkError(err)
 
 		answer := abbreviation(lhs, rhs)
-		fmt.Fprintln(writer, answer)
+		_, err = fmt.Fprintln(writer, answer)
+		checkError(err)
 	}
 
 	err = writer.Flush()

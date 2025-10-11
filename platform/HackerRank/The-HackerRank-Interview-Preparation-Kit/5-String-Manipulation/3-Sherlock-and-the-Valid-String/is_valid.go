@@ -9,8 +9,11 @@ import (
 func isValid(s string) string {
 	counter := countLetters(s)
 
-	var maxValue int
-	var removed bool
+	var (
+		maxValue int
+		removed  bool
+	)
+
 	for _, occurrence := range counter {
 		if occurrence == 0 || occurrence == maxValue {
 			continue
@@ -50,25 +53,27 @@ func main() {
 	if err != nil {
 		stdin = os.Stdin
 	} else {
-		defer stdin.Close()
+		defer func() { err = stdin.Close(); checkError(err) }()
 	}
 
 	stdout, err := os.Create(os.Getenv("OUTPUT_PATH"))
 	if err != nil {
 		stdout = os.Stdout
 	} else {
-		defer stdout.Close()
+		defer func() { err = stdout.Close(); checkError(err) }()
 	}
 
 	reader := bufio.NewReaderSize(stdin, 1024*1024)
 	writer := bufio.NewWriterSize(stdout, 1024*1024)
 
 	var s string
+
 	_, err = fmt.Fscan(reader, &s)
 	checkError(err)
 
 	result := isValid(s)
-	fmt.Fprintln(writer, result)
+	_, err = fmt.Fprintln(writer, result)
+	checkError(err)
 
 	err = writer.Flush()
 	checkError(err)

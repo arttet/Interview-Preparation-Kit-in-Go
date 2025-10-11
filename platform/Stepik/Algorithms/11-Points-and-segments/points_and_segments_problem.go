@@ -47,10 +47,12 @@ func pointsAndSegmentsProblem(segments [][]int, points []int) []int {
 	}
 
 	sort.SliceStable(arr, func(i, j int) bool {
-		return arr[i].value < arr[j].value || arr[i].value == arr[j].value && arr[i].border < arr[j].border
+		return arr[i].value < arr[j].value ||
+			arr[i].value == arr[j].value && arr[i].border < arr[j].border
 	})
 
 	var counter int
+
 	result := make([]int, m)
 
 	for i := range arr {
@@ -72,20 +74,21 @@ func main() {
 	if err != nil {
 		stdin = os.Stdin
 	} else {
-		defer stdin.Close()
+		defer func() { err = stdin.Close(); checkError(err) }()
 	}
 
 	stdout, err := os.Create(os.Getenv("OUTPUT_PATH"))
 	if err != nil {
 		stdout = os.Stdout
 	} else {
-		defer stdout.Close()
+		defer func() { err = stdout.Close(); checkError(err) }()
 	}
 
 	reader := bufio.NewReaderSize(stdin, 1024*1024)
 	writer := bufio.NewWriterSize(stdout, 1024*1024)
 
 	var n, m int
+
 	_, err = fmt.Fscanln(reader, &n, &m)
 	checkError(err)
 
@@ -104,7 +107,8 @@ func main() {
 
 	result := pointsAndSegmentsProblem(segments, points)
 	for _, counter := range result {
-		fmt.Fprintf(writer, "%d ", counter)
+		_, err = fmt.Fprintf(writer, "%d ", counter)
+		checkError(err)
 	}
 
 	err = writer.Flush()

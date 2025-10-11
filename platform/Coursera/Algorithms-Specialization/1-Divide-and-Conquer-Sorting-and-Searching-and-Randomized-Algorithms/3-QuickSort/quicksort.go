@@ -40,7 +40,11 @@ func choosePivot(arr []int, left, right int, pivotID pivotIDType) {
 	case lastPivot:
 		arr[left], arr[right] = arr[right], arr[left]
 	case medianOfThreePivot:
-		pivotIndex := arrayMax(arr, arrayMin(arr, left, right), arrayMin(arr, arrayMax(arr, left, right), (left+right)/2))
+		pivotIndex := arrayMax(
+			arr,
+			arrayMin(arr, left, right),
+			arrayMin(arr, arrayMax(arr, left, right), (left+right)/2),
+		)
 		arr[left], arr[pivotIndex] = arr[pivotIndex], arr[left]
 	}
 }
@@ -49,6 +53,7 @@ func partition(arr []int, left, right int) int {
 	pivot := arr[left]
 
 	i := left
+
 	for j := left + 1; j <= right; j++ {
 		if arr[j] < pivot {
 			i++
@@ -82,25 +87,29 @@ func main() {
 	if err != nil {
 		stdin = os.Stdin
 	} else {
-		defer stdin.Close()
+		defer func() { err = stdin.Close(); checkError(err) }()
 	}
 
 	stdout, err := os.Create(os.Getenv("OUTPUT_PATH"))
 	if err != nil {
 		stdout = os.Stdout
 	} else {
-		defer stdout.Close()
+		defer func() { err = stdout.Close(); checkError(err) }()
 	}
 
 	reader := bufio.NewScanner(stdin)
 	writer := bufio.NewWriterSize(stdout, 1024*1024)
 
 	const initialCapacity = 64
+
 	arr := make([]int, 0, initialCapacity)
+
 	for reader.Scan() {
 		var value int
+
 		value, err = strconv.Atoi(reader.Text())
 		checkError(err)
+
 		arr = append(arr, value)
 	}
 
@@ -110,7 +119,8 @@ func main() {
 		copy(array, arr)
 
 		result := countComparisons(array, pivot)
-		fmt.Fprintln(writer, result)
+		_, err = fmt.Fprintln(writer, result)
+		checkError(err)
 	}
 
 	err = writer.Flush()

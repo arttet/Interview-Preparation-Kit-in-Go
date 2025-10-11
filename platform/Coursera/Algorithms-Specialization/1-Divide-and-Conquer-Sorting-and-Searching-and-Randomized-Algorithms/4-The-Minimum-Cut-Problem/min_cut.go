@@ -84,11 +84,14 @@ func minimumCut(g *graph, iterations int) int {
 	var wg sync.WaitGroup
 	for i := range iterations {
 		wg.Add(1)
+
 		go func(i int) {
 			defer wg.Done()
+
 			cutSize[i] = g.clone().karger()
 		}(i)
 	}
+
 	wg.Wait()
 
 	minCut := cutSize[0]
@@ -120,6 +123,7 @@ func (g *graph) karger() int {
 		for _, edge := range g.getEdges(v2) {
 			vi := edge.node
 			g.removeEdge(vi, v2)
+
 			if vi != v1 {
 				g.addEdge(vi, v1)
 			}
@@ -143,6 +147,7 @@ func (g *graph) randomNodes() (vertice, vertice) {
 	n := g.Len()
 	rnd, err := rand.Int(rand.Reader, big.NewInt(int64(n)))
 	checkError(err)
+
 	v1Index := int(rnd.Int64())
 
 	var i int
@@ -152,6 +157,7 @@ func (g *graph) randomNodes() (vertice, vertice) {
 
 			break
 		}
+
 		i++
 	}
 
@@ -179,20 +185,21 @@ func main() {
 	if err != nil {
 		stdin = os.Stdin
 	} else {
-		defer stdin.Close()
+		defer func() { err = stdin.Close(); checkError(err) }()
 	}
 
 	stdout, err := os.Create(os.Getenv("OUTPUT_PATH"))
 	if err != nil {
 		stdout = os.Stdout
 	} else {
-		defer stdout.Close()
+		defer func() { err = stdout.Close(); checkError(err) }()
 	}
 
 	reader := bufio.NewScanner(stdin)
 	writer := bufio.NewWriterSize(stdout, 1024*1024)
 
 	var origin, destiny int
+
 	graph := newGraph()
 
 	for reader.Scan() {
@@ -212,7 +219,8 @@ func main() {
 	it := min(n*(n-1)/2, 1024)
 
 	result := minimumCut(graph, it)
-	fmt.Fprint(writer, result)
+	_, err = fmt.Fprint(writer, result)
+	checkError(err)
 
 	err = writer.Flush()
 	checkError(err)

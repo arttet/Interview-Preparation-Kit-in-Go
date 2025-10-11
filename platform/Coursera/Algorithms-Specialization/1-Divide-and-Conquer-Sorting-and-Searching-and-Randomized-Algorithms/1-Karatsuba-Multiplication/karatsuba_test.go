@@ -36,7 +36,7 @@ func TestCoursera(t *testing.T) {
 }
 
 func BenchmarkBigMult(b *testing.B) {
-	for i := 0; i < b.N; i++ {
+	for range b.N {
 		x, _ := big.NewInt(0).SetString(lhs, 10)
 		y, _ := big.NewInt(0).SetString(rhs, 10)
 		big.NewInt(0).Mul(x, y)
@@ -44,7 +44,7 @@ func BenchmarkBigMult(b *testing.B) {
 }
 
 func BenchmarkMult(b *testing.B) {
-	for i := 0; i < b.N; i++ {
+	for range b.N {
 		multiplication(lhs, rhs)
 	}
 }
@@ -61,5 +61,6 @@ func TestDoCarryPanic(t *testing.T) {
 
 	x := newInteger("", 1)
 	x[0] = -10
+
 	assert.Panics(t, func() { x.doCarry() }, "The function did not panic")
 }

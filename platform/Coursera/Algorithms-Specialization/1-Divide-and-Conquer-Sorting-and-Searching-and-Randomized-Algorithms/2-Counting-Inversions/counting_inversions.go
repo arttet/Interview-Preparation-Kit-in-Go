@@ -19,6 +19,7 @@ func mergesort(arr, temp []int, left, right int) int64 {
 	middle := (left + right) / 2
 
 	var count int64
+
 	count += mergesort(arr, temp, left, middle)
 	count += mergesort(arr, temp, middle, right)
 	count += merge(arr, temp, left, middle, right)
@@ -30,7 +31,9 @@ func merge(arr, temp []int, left, middle, right int) int64 {
 	var inversions int64
 
 	i, j := left, middle
+
 	k := left
+
 	for ; i < middle && j < right; k++ {
 		if arr[i] <= arr[j] {
 			temp[k] = arr[i]
@@ -52,21 +55,27 @@ func merge(arr, temp []int, left, middle, right int) int64 {
 func main() {
 	stdin, err := os.Open(os.Getenv("INPUT_PATH"))
 	checkError(err)
-	defer stdin.Close()
+
+	defer func() { err = stdin.Close(); checkError(err) }()
 
 	stdout, err := os.Create(os.Getenv("OUTPUT_PATH"))
 	checkError(err)
-	defer stdout.Close()
+
+	defer func() { err = stdout.Close(); checkError(err) }()
 
 	reader := bufio.NewScanner(stdin)
 	writer := bufio.NewWriterSize(stdout, 1024*1024)
 
 	const initialCapacity = 64
+
 	arr := make([]int, 0, initialCapacity)
+
 	for reader.Scan() {
 		var value int
+
 		value, err = strconv.Atoi(reader.Text())
 		checkError(err)
+
 		arr = append(arr, value)
 	}
 
@@ -74,7 +83,8 @@ func main() {
 	checkError(err)
 
 	result := countInversions(arr)
-	fmt.Fprint(writer, result)
+	_, err = fmt.Fprint(writer, result)
+	checkError(err)
 
 	err = writer.Flush()
 	checkError(err)

@@ -15,6 +15,7 @@ const (
 func insertValue(value int, number, frequency map[int]int) {
 	freq := number[value]
 	number[value]++
+
 	frequency[number[value]]++
 	if freq > 0 {
 		frequency[freq]--
@@ -54,6 +55,7 @@ func frequencyQueries(queries [][]int) []int {
 			if freq, ok := frequency[value]; ok && freq > 0 {
 				item = 1
 			}
+
 			result = append(result, item)
 		}
 	}
@@ -66,20 +68,21 @@ func main() {
 	if err != nil {
 		stdin = os.Stdin
 	} else {
-		defer stdin.Close()
+		defer func() { err = stdin.Close(); checkError(err) }()
 	}
 
 	stdout, err := os.Create(os.Getenv("OUTPUT_PATH"))
 	if err != nil {
 		stdout = os.Stdout
 	} else {
-		defer stdout.Close()
+		defer func() { err = stdout.Close(); checkError(err) }()
 	}
 
 	reader := bufio.NewReaderSize(stdin, 1024*1024)
 	writer := bufio.NewWriterSize(stdout, 1024*1024)
 
 	var q int
+
 	_, err = fmt.Fscan(reader, &q)
 	checkError(err)
 
@@ -92,7 +95,8 @@ func main() {
 
 	result := frequencyQueries(queries)
 	for i := range result {
-		fmt.Fprintln(writer, result[i])
+		_, err = fmt.Fprintln(writer, result[i])
+		checkError(err)
 	}
 
 	err = writer.Flush()

@@ -13,8 +13,10 @@ func minimumPasses(machines, workers, price, target int64) int64 {
 		return 1
 	}
 
-	var left int64 = 1
-	var right int64 = math.MaxInt64
+	var (
+		left  int64 = 1
+		right int64 = math.MaxInt64
+	)
 
 	for left < right {
 		passes := left + (right-left)>>1
@@ -40,14 +42,17 @@ func check(machines, workers, price, target, passes int64) bool {
 
 		if candies < price {
 			rounds = (price - candies + machines*workers - 1) / (machines * workers)
+
 			passes -= rounds
 			if passes < 1 {
 				break
 			}
+
 			candies += rounds * machines * workers
 		}
 
 		candies -= price
+
 		if machines > workers {
 			workers++
 		} else {
@@ -63,25 +68,27 @@ func main() {
 	if err != nil {
 		stdin = os.Stdin
 	} else {
-		defer stdin.Close()
+		defer func() { err = stdin.Close(); checkError(err) }()
 	}
 
 	stdout, err := os.Create(os.Getenv("OUTPUT_PATH"))
 	if err != nil {
 		stdout = os.Stdout
 	} else {
-		defer stdout.Close()
+		defer func() { err = stdout.Close(); checkError(err) }()
 	}
 
 	reader := bufio.NewReaderSize(stdin, 1024*1024)
 	writer := bufio.NewWriterSize(stdout, 1024*1024)
 
 	var m, w, p, n int64
+
 	_, err = fmt.Fscan(reader, &m, &w, &p, &n)
 	checkError(err)
 
 	answer := minimumPasses(m, w, p, n)
-	fmt.Fprint(writer, answer)
+	_, err = fmt.Fprint(writer, answer)
+	checkError(err)
 
 	err = writer.Flush()
 	checkError(err)
