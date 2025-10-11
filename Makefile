@@ -25,6 +25,7 @@ req:			## Install requirements
 .PHONY: fmt
 fmt:			## Format the codebase
 	@goimports -e -w -local ${LOCAL_PKG} ${CURDIR}
+	@yamlfmt -lint .
 	@docker run --rm -v $(shell pwd):/workdir -t davidanson/markdownlint-cli2 '/workdir/**/*.md' '#/workdir/docs/themes/adidoks/**/*.md' --fix
 
 .PHONY: lint

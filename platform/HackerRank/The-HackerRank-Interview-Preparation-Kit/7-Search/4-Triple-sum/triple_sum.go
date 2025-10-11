@@ -48,20 +48,21 @@ func main() {
 	if err != nil {
 		stdin = os.Stdin
 	} else {
-		defer stdin.Close()
+		defer func() { err = stdin.Close(); checkError(err) }()
 	}
 
 	stdout, err := os.Create(os.Getenv("OUTPUT_PATH"))
 	if err != nil {
 		stdout = os.Stdout
 	} else {
-		defer stdout.Close()
+		defer func() { err = stdout.Close(); checkError(err) }()
 	}
 
 	reader := bufio.NewReaderSize(stdin, 1024*1024)
 	writer := bufio.NewWriterSize(stdout, 1024*1024)
 
 	var lenA, lenB, lenC int
+
 	_, err = fmt.Fscan(reader, &lenA, &lenB, &lenC)
 	checkError(err)
 
@@ -84,7 +85,8 @@ func main() {
 	}
 
 	result := triplets(a, b, c)
-	fmt.Fprint(writer, result)
+	_, err = fmt.Fprint(writer, result)
+	checkError(err)
 
 	err = writer.Flush()
 	checkError(err)

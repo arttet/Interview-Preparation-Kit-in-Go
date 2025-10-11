@@ -13,6 +13,7 @@ func substrCount(n int, s string) int64 {
 		for ; p < n-1 && s[p] == s[p+1]; p++ {
 			repeat++
 		}
+
 		result += repeat * (repeat + 1) / 2
 
 		for i := 1; p-i >= 0 && p+i < n && s[p+i] == s[p-1] && s[p-i] == s[p-1]; i++ {
@@ -28,26 +29,30 @@ func main() {
 	if err != nil {
 		stdin = os.Stdin
 	} else {
-		defer stdin.Close()
+		defer func() { err = stdin.Close(); checkError(err) }()
 	}
 
 	stdout, err := os.Create(os.Getenv("OUTPUT_PATH"))
 	if err != nil {
 		stdout = os.Stdout
 	} else {
-		defer stdout.Close()
+		defer func() { err = stdout.Close(); checkError(err) }()
 	}
 
 	reader := bufio.NewReaderSize(stdin, 1024*1024)
 	writer := bufio.NewWriterSize(stdout, 1024*1024)
 
-	var n int
-	var s string
+	var (
+		n int
+		s string
+	)
+
 	_, err = fmt.Fscan(reader, &n, &s)
 	checkError(err)
 
 	result := substrCount(n, s)
-	fmt.Fprintln(writer, result)
+	_, err = fmt.Fprintln(writer, result)
+	checkError(err)
 
 	err = writer.Flush()
 	checkError(err)

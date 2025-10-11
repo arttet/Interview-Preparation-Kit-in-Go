@@ -19,7 +19,8 @@ func TestOK(t *testing.T) {
 	funcTest := func() {
 		stdout, err := os.Create(os.Getenv(utility.OutputPathEnv))
 		utility.CheckError(err)
-		defer stdout.Close()
+
+		defer func() { err = stdout.Close(); utility.CheckError(err) }()
 
 		_, err = fmt.Fprintln(stdout, "Test is done.")
 		utility.CheckError(err)
@@ -34,5 +35,9 @@ func TestPanic(t *testing.T) {
 	emptyCase := utility.TestCase{}
 
 	assert.Panics(t, func() { emptyCase.RunTest(t, func() {}) }, "The function did not panic")
-	assert.Panics(t, func() { utility.CheckError(utility.ErrTestPanicMock) }, "The function did not panic")
+	assert.Panics(
+		t,
+		func() { utility.CheckError(utility.ErrTestPanicMock) },
+		"The function did not panic",
+	)
 }

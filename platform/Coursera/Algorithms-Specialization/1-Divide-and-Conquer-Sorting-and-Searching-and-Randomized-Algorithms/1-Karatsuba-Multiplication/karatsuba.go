@@ -22,7 +22,7 @@ func multiplication(lhs, rhs string) string {
 
 	result.doCarry()
 
-	return result.String()
+	return result.doString()
 }
 
 // Input: two n-digit positive integers x and y.
@@ -117,7 +117,7 @@ func (x Integer) doCarry() {
 	}
 }
 
-func (x Integer) String() string {
+func (x Integer) doString() string {
 	n := len(x)
 
 	var i int
@@ -125,6 +125,7 @@ func (x Integer) String() string {
 		if x[i] != 0 {
 			break
 		}
+
 		n--
 	}
 
@@ -143,14 +144,14 @@ func main() {
 	if err != nil {
 		stdin = os.Stdin
 	} else {
-		defer stdin.Close()
+		defer func() { err = stdin.Close(); checkError(err) }()
 	}
 
 	stdout, err := os.Create(os.Getenv("OUTPUT_PATH"))
 	if err != nil {
 		stdout = os.Stdout
 	} else {
-		defer stdout.Close()
+		defer func() { err = stdout.Close(); checkError(err) }()
 	}
 
 	reader := bufio.NewReaderSize(stdin, 1024*1024)
@@ -162,7 +163,8 @@ func main() {
 	checkError(err)
 
 	result := multiplication(left, right)
-	fmt.Fprint(writer, result)
+	_, err = fmt.Fprint(writer, result)
+	checkError(err)
 
 	err = writer.Flush()
 	checkError(err)

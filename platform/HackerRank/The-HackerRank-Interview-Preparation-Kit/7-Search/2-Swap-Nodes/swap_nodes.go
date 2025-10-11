@@ -93,20 +93,21 @@ func main() {
 	if err != nil {
 		stdin = os.Stdin
 	} else {
-		defer stdin.Close()
+		defer func() { err = stdin.Close(); checkError(err) }()
 	}
 
 	stdout, err := os.Create(os.Getenv("OUTPUT_PATH"))
 	if err != nil {
 		stdout = os.Stdout
 	} else {
-		defer stdout.Close()
+		defer func() { err = stdout.Close(); checkError(err) }()
 	}
 
 	reader := bufio.NewReaderSize(stdin, 1024*1024)
 	writer := bufio.NewWriterSize(stdout, 1024*1024)
 
 	var n int
+
 	_, err = fmt.Fscan(reader, &n)
 	checkError(err)
 
@@ -119,6 +120,7 @@ func main() {
 	}
 
 	var k int
+
 	_, err = fmt.Fscan(reader, &k)
 	checkError(err)
 
@@ -132,15 +134,18 @@ func main() {
 
 	for i := range result {
 		for j := range result[i] {
-			fmt.Fprint(writer, result[i][j])
+			_, err = fmt.Fprint(writer, result[i][j])
+			checkError(err)
 
 			if j != len(result[i])-1 {
-				fmt.Fprint(writer, " ")
+				_, err = fmt.Fprint(writer, " ")
+				checkError(err)
 			}
 		}
 
 		if i != len(result)-1 {
-			fmt.Fprintln(writer)
+			_, err = fmt.Fprintln(writer)
+			checkError(err)
 		}
 	}
 

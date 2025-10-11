@@ -10,7 +10,9 @@ import (
 func minimumTime(machines []int64, goal int64) int64 {
 	sort.Slice(machines, func(i, j int) bool { return machines[i] < machines[j] })
 
-	slowestMachine, fastestMachine, n := machines[0], machines[len(machines)-1], int64(len(machines))
+	slowestMachine, fastestMachine, n := machines[0], machines[len(machines)-1], int64(
+		len(machines),
+	)
 	lowerBound := goal * slowestMachine / n
 	upperBound := goal * fastestMachine / n
 
@@ -40,21 +42,23 @@ func main() {
 	if err != nil {
 		stdin = os.Stdin
 	} else {
-		defer stdin.Close()
+		defer func() { err = stdin.Close(); checkError(err) }()
 	}
 
 	stdout, err := os.Create(os.Getenv("OUTPUT_PATH"))
 	if err != nil {
 		stdout = os.Stdout
 	} else {
-		defer stdout.Close()
+		defer func() { err = stdout.Close(); checkError(err) }()
 	}
 
 	reader := bufio.NewReaderSize(stdin, 1024*1024)
 	writer := bufio.NewWriterSize(stdout, 1024*1024)
 
-	var n int
-	var goal int64
+	var (
+		n    int
+		goal int64
+	)
 
 	_, err = fmt.Fscan(reader, &n, &goal)
 	checkError(err)
@@ -66,7 +70,8 @@ func main() {
 	}
 
 	answer := minimumTime(machines, goal)
-	fmt.Fprint(writer, answer)
+	_, err = fmt.Fprint(writer, answer)
+	checkError(err)
 
 	err = writer.Flush()
 	checkError(err)

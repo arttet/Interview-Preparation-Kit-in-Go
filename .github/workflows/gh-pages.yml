@@ -20,12 +20,12 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      ZOLA_VERSION: 0.19.2
+      ZOLA_VERSION: 0.21.0
       DOC_DIR: docs
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup Pages
         uses: actions/configure-pages@v5
@@ -39,7 +39,7 @@ jobs:
         run: zola --root ${{ env.DOC_DIR }} build
 
       - name: Upload artifacts
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v4
         with:
           path: ./${{ env.DOC_DIR }}/public
 

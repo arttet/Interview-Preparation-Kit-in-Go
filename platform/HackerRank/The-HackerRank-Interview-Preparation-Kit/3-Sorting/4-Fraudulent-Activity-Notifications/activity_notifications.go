@@ -10,6 +10,7 @@ const maxExpenditure = 201
 
 func activityNotifications(expenditures []int, d int) int {
 	var notifications int
+
 	histogram := buildHistogram(expenditures[:d])
 
 	for n, i := len(expenditures), d; i < n; i++ {
@@ -56,6 +57,7 @@ func calculateDoubleMedian(histogram []int, days int) int {
 			if cursor == days/2 {
 				left = j
 			}
+
 			if cursor > days/2 {
 				if left != -1 {
 					doubleMedian = left + j
@@ -81,20 +83,21 @@ func main() {
 	if err != nil {
 		stdin = os.Stdin
 	} else {
-		defer stdin.Close()
+		defer func() { err = stdin.Close(); checkError(err) }()
 	}
 
 	stdout, err := os.Create(os.Getenv("OUTPUT_PATH"))
 	if err != nil {
 		stdout = os.Stdout
 	} else {
-		defer stdout.Close()
+		defer func() { err = stdout.Close(); checkError(err) }()
 	}
 
 	reader := bufio.NewReaderSize(stdin, 1024*1024)
 	writer := bufio.NewWriterSize(stdout, 1024*1024)
 
 	var n, d int
+
 	_, err = fmt.Fscan(reader, &n, &d)
 	checkError(err)
 
@@ -106,7 +109,8 @@ func main() {
 	}
 
 	result := activityNotifications(expenditures, d)
-	fmt.Fprint(writer, result)
+	_, err = fmt.Fprint(writer, result)
+	checkError(err)
 
 	err = writer.Flush()
 	checkError(err)

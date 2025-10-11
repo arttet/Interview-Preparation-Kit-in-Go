@@ -21,6 +21,7 @@ func maximumSum(arr []int64, m int64) int64 {
 		current = (arr[i]%m + current) % m
 		prefix[i].prefix = current
 		prefix[i].index = i
+
 		if current > maxSum {
 			maxSum = current
 		}
@@ -54,26 +55,29 @@ func main() {
 	if err != nil {
 		stdin = os.Stdin
 	} else {
-		defer stdin.Close()
+		defer func() { err = stdin.Close(); checkError(err) }()
 	}
 
 	stdout, err := os.Create(os.Getenv("OUTPUT_PATH"))
 	if err != nil {
 		stdout = os.Stdout
 	} else {
-		defer stdout.Close()
+		defer func() { err = stdout.Close(); checkError(err) }()
 	}
 
 	reader := bufio.NewReaderSize(stdin, 1024*1024)
 	writer := bufio.NewWriterSize(stdout, 1024*1024)
 
 	var q int
+
 	_, err = fmt.Fscan(reader, &q)
 	checkError(err)
 
 	for range q {
-		var n int
-		var m int64
+		var (
+			n int
+			m int64
+		)
 
 		_, err = fmt.Fscan(reader, &n, &m)
 		checkError(err)
@@ -85,7 +89,8 @@ func main() {
 		}
 
 		answer := maximumSum(arr, m)
-		fmt.Fprintln(writer, answer)
+		_, err = fmt.Fprintln(writer, answer)
+		checkError(err)
 	}
 
 	err = writer.Flush()

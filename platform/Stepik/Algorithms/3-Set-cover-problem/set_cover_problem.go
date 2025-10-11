@@ -21,6 +21,7 @@ type pair struct {
 func setCoverProblem(arr []segment) []int {
 	n := len(arr)
 	points := make([]pair, 2*n)
+
 	for i := range arr {
 		index := 2 * i
 		points[index].index = i
@@ -33,7 +34,8 @@ func setCoverProblem(arr []segment) []int {
 	}
 
 	sort.SliceStable(points, func(i, j int) bool {
-		return points[i].value < points[j].value || points[i].value == points[j].value && points[i].isLeft
+		return points[i].value < points[j].value ||
+			points[i].value == points[j].value && points[i].isLeft
 	})
 
 	coverage := make([]bool, n)
@@ -46,6 +48,7 @@ func setCoverProblem(arr []segment) []int {
 			stack = append(stack, points[i].index)
 		} else if !coverage[points[i].index] {
 			result = append(result, points[i].value)
+
 			for len(stack) != 0 {
 				n := len(stack) - 1
 				coverage[stack[n]] = true
@@ -62,14 +65,14 @@ func main() {
 	if err != nil {
 		stdin = os.Stdin
 	} else {
-		defer stdin.Close()
+		defer func() { err = stdin.Close(); checkError(err) }()
 	}
 
 	stdout, err := os.Create(os.Getenv("OUTPUT_PATH"))
 	if err != nil {
 		stdout = os.Stdout
 	} else {
-		defer stdout.Close()
+		defer func() { err = stdout.Close(); checkError(err) }()
 	}
 
 	reader := bufio.NewReaderSize(stdin, 1024*1024)
@@ -87,10 +90,12 @@ func main() {
 	}
 
 	result := setCoverProblem(arr)
-	fmt.Fprintln(writer, len(result))
+	_, err = fmt.Fprintln(writer, len(result))
+	checkError(err)
 
 	for i := range result {
-		fmt.Fprintf(writer, "%d ", result[i])
+		_, err = fmt.Fprintf(writer, "%d ", result[i])
+		checkError(err)
 	}
 
 	err = writer.Flush()

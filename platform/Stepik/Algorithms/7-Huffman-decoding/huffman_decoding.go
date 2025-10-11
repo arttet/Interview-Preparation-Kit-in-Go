@@ -33,14 +33,17 @@ func buildTree(codes map[rune]string) *HuffmanNode {
 				if current.left == nil {
 					current.left = newHuffmanNode()
 				}
+
 				current = current.left
 			} else {
 				if current.right == nil {
 					current.right = newHuffmanNode()
 				}
+
 				current = current.right
 			}
 		}
+
 		current.value = char
 	}
 
@@ -56,6 +59,7 @@ func huffmanDecode(codes map[rune]string, encoded string) string {
 	result.Grow(initialCapacity)
 
 	current := root
+
 	for _, code := range encoded {
 		if code == '0' {
 			current = current.left
@@ -77,26 +81,31 @@ func main() {
 	if err != nil {
 		stdin = os.Stdin
 	} else {
-		defer stdin.Close()
+		defer func() { err = stdin.Close(); checkError(err) }()
 	}
 
 	stdout, err := os.Create(os.Getenv("OUTPUT_PATH"))
 	if err != nil {
 		stdout = os.Stdout
 	} else {
-		defer stdout.Close()
+		defer func() { err = stdout.Close(); checkError(err) }()
 	}
 
 	reader := bufio.NewReaderSize(stdin, 1024*1024)
 	writer := bufio.NewWriterSize(stdout, 1024*1024)
 
 	var k, l int
+
 	_, err = fmt.Fscanln(reader, &k, &l)
 	checkError(err)
 
 	codes := make(map[rune]string)
-	var letter rune
-	var code string
+
+	var (
+		letter rune
+		code   string
+	)
+
 	for ; k > 0; k-- {
 		_, err = fmt.Fscanf(reader, "%c: %s\n", &letter, &code)
 		checkError(err)
@@ -105,11 +114,13 @@ func main() {
 	}
 
 	var encoded string
+
 	_, err = fmt.Fscan(reader, &encoded)
 	checkError(err)
 
 	str := huffmanDecode(codes, encoded)
-	fmt.Fprint(writer, str)
+	_, err = fmt.Fprint(writer, str)
+	checkError(err)
 
 	err = writer.Flush()
 	checkError(err)

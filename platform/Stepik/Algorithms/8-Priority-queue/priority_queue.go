@@ -10,9 +10,9 @@ import (
 // An MaxIntHeap is a min-heap of ints.
 type MaxIntHeap []int
 
-func (h MaxIntHeap) Len() int           { return len(h) }
-func (h MaxIntHeap) Less(i, j int) bool { return h[i] > h[j] }
-func (h MaxIntHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
+func (h *MaxIntHeap) Len() int           { return len(*h) }
+func (h *MaxIntHeap) Less(i, j int) bool { return (*h)[i] > (*h)[j] }
+func (h *MaxIntHeap) Swap(i, j int)      { (*h)[i], (*h)[j] = (*h)[j], (*h)[i] }
 
 func (h *MaxIntHeap) Push(value any) {
 	val, _ := value.(int)
@@ -33,22 +33,24 @@ func main() {
 	if err != nil {
 		stdin = os.Stdin
 	} else {
-		defer stdin.Close()
+		defer func() { err = stdin.Close(); checkError(err) }()
 	}
 
 	stdout, err := os.Create(os.Getenv("OUTPUT_PATH"))
 	if err != nil {
 		stdout = os.Stdout
 	} else {
-		defer stdout.Close()
+		defer func() { err = stdout.Close(); checkError(err) }()
 	}
 
 	reader := bufio.NewReaderSize(stdin, 1024*1024)
 	writer := bufio.NewWriterSize(stdout, 1024*1024)
 
-	var n int
-	var value int
-	var command string
+	var (
+		n       int
+		value   int
+		command string
+	)
 
 	_, err = fmt.Fscan(reader, &n)
 	checkError(err)
@@ -66,7 +68,8 @@ func main() {
 
 			heap.Push(maxHeap, value)
 		} else if command == "ExtractMax" && maxHeap.Len() > 0 {
-			fmt.Fprintf(writer, "%d\n", heap.Pop(maxHeap))
+			_, err = fmt.Fprintf(writer, "%d\n", heap.Pop(maxHeap))
+			checkError(err)
 		}
 	}
 

@@ -1,69 +1,84 @@
-# See https://golangci-lint.run/usage/linters/
+# See https://golangci-lint.run/docs/configuration/file/
+version: '2'
 
+# https://golangci-lint.run/docs/configuration/file/#linters-configuration
 linters:
-  enable-all: true
+  default: all
+
   disable:
     # Note: deprecated linters
-    - gomnd
-    - execinquery
-    - exportloopref
-    # Note: disabled linters
-    - varnamelen
-    # FIXME: fix issues
     - wsl
+    # Note: disabled linters
+    - revive
+    - varnamelen
 
-linters-settings:
-  cyclop:
-    max-complexity: 15
-  depguard:
-    rules:
-      main:
-        list-mode: lax
-        files:
-          - '!$test'
-        allow:
-          - '$gostd'
-  exhaustruct:
-    exclude:
-      - github.com/arttet/Interview-Preparation-Kit-in-Go/internal/utility.TestCase
-  gci:
-    sections:
-      - standard
-      - default
-      - localmodule
-  gofmt:
-    rewrite-rules:
-      - pattern: 'interface{}'
-        replacement: 'any'
-  gofumpt:
-    module-path: github.com/arttet/Interview-Preparation-Kit-in-Go
-    extra-rules: true
-  goimports:
-    local-prefixes: github.com/arttet/Interview-Preparation-Kit-in-Go
-  gosec:
-    severity: low
-    confidence: low
-    config:
-      global:
-        nosec: true
-        show-ignored: true
-        audit: true
-  gosmopolitan:
-    allow-time-local: true
-  govet:
-    enable-all: true
-  mnd:
-    ignored-numbers:
-      - '2'
-      - '1024'
-  paralleltest:
-    ignore-missing: true
+  settings:
+    cyclop:
+      max-complexity: 15
+    depguard:
+      rules:
+        main:
+          list-mode: lax
+          files:
+            - '!$test'
+          allow:
+            - '$gostd'
+    exhaustruct:
+      exclude:
+        - github.com/arttet/Interview-Preparation-Kit-in-Go/internal/utility.TestCase
+    funlen:
+      lines: 65
+    gosec:
+      excludes:
+        - G304 # File path provided as taint input
+      severity: low
+      confidence: low
+      config:
+        global:
+          nosec: true
+          show-ignored: true
+          audit: true
+    gosmopolitan:
+      allow-time-local: true
+    govet:
+      enable-all: true
+    mnd:
+      ignored-numbers:
+        - '2'
+        - '1024'
+    paralleltest:
+      ignore-missing: true
+
+# https://golangci-lint.run/docs/configuration/file/#formatters-configuration
+formatters:
+  enable:
+    - gci
+    - gofmt
+    - gofumpt
+    - goimports
+    - golines
+    - swaggo
+  settings:
+    gci:
+      sections:
+        - standard
+        - default
+        - localmodule
+    gofmt:
+      rewrite-rules:
+        - pattern: 'interface{}'
+          replacement: 'any'
+    gofumpt:
+      module-path: github.com/arttet/Interview-Preparation-Kit-in-Go
+      extra-rules: true
+    goimports:
+      local-prefixes:
+        - github.com/arttet/Interview-Preparation-Kit-in-Go
 
 issues:
-  max-same-issues: 50
-
-output:
-  show-stats: true
+  max-issues-per-linter: 0
+  max-same-issues: 0
+  fix: true
 
 run:
   timeout: 5m

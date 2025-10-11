@@ -1,0 +1,5 @@
+formatter:
+  retain_line_breaks: false
+  retain_line_breaks_single: true
+  max_blank_lines: 1
+  eof_newline: true
