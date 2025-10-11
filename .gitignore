@@ -12,3 +12,9 @@
 
 # gosec
 *.sarif
+
+# gemini-cli settings
+.gemini/
+
+# GitHub App credentials
+gha-creds-*.json
