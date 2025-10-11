@@ -9,6 +9,9 @@ on:
     - cron: 0 0 * * 1
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   fmt:
     runs-on: ubuntu-latest
@@ -46,23 +49,61 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       security-events: write
+      pull-requests: write
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v5
+
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v4
+        if: ${{ github.event_name == 'pull_request' }}
+        with:
+          comment-summary-in-pr: always
 
       - name: Run Security Scanner
         uses: securego/gosec@master
         with:
           args: -confidence low -enable-audit -tests -track-suppressions -no-fail -fmt sarif -sort -out results.sarif -stdout -verbose=text ./...
 
-      - name: Upload the analysis results
+      - name: Upload Static Analysis Results
         uses: github/codeql-action/upload-sarif@v4
         with:
-          sarif_file: ./results.sarif
+          sarif_file: results.sarif
+
+  analyze:
+    name: Analyze (${{ matrix.language }})
+    runs-on: ${{ (matrix.language == 'swift' && 'macos-latest') || 'ubuntu-latest' }}
+    permissions:
+      security-events: write
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - language: actions
+            build-mode: none
+          - language: go
+            build-mode: autobuild
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v4
+        with:
+          languages: ${{ matrix.language }}
+          build-mode: ${{ matrix.build-mode }}
+          queries: security-extended,security-and-quality
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v4
+        with:
+          category: '/language:${{matrix.language}}'
 
   build:
-    needs: [fmt, audit]
+    needs: [fmt, audit, analyze]
     runs-on: ${{ matrix.os }}
 
     strategy:
