@@ -196,7 +196,7 @@ jobs:
           dsn: ${{ secrets.DEEPSOURCE_DSN }}
 
       - name: Upload the code coverage report to GitHub
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: code-coverage-report
           path: coverage.html
