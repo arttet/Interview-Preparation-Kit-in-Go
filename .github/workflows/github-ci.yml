@@ -66,7 +66,7 @@ jobs:
           comment-summary-in-pr: always
 
       - name: Run Security Scanner
-        uses: securego/gosec@fddb9427b874cb5177d0b52a31b293deeb83c1b4 # master
+        uses: securego/gosec@a58917f611bbd062000eac14a5c45434854f61f6 # master
         with:
           args: -confidence low -enable-audit -tests -track-suppressions -no-fail -fmt sarif -sort -out results.sarif -stdout -verbose=text ./...
 
